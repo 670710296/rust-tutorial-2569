@@ -14,7 +14,7 @@
 | 1 | นายปภังกร มงคลนรกิจ | 670710293 | `@[กรอก GitHub username]` | Concept + Short Code Illustration (สรุปแนวคิดหลัก + โค้ดตัวอย่างสั้น) |
 | 2 | นางสาวศิริกานต์ หรุ่นมาบแค | 670710294 | `@[กรอก GitHub username]` | Detailed Code + Live Demo (โค้ดเชิงลึก + สาธิตสด) |
 | 3 | นายสิรวิชญ์ เชี่ยวชาญ | 670710296 | `@[กรอก GitHub username]` | Rust vs Other Language + PPL Analysis (เปรียบเทียบภาษา + วิเคราะห์เชิง PPL) |
-| 4 | นายวีรภัทร พุฒหอม | 670710336 | `@[กรอก GitHub username]` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
+| 4 | นายวีรภัทร พุฒหอม | 670710336 | `@670710336` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
 
 > แก้ไข GitHub Username ของแต่ละคนให้ตรงกับบัญชีจริงก่อนเริ่มทำงาน (ผู้สอนจะใช้คอลัมน์นี้เชิญเป็น collaborator ของ repository)
 
