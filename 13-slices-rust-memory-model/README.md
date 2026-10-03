@@ -167,11 +167,42 @@ fn main() {
 
 ## 7. Common Mistakes
 
-### Mistake 1 — `[Range Out of Bounds]`
+### Mistake 1 — `[borrow of moved value: `s1`]`
 
 **Problem**
 
 `กำหนดช่วง Slice เกินขนาดของข้อมูล`
+
+**Incorrect Code**
+
+```rust
+fn main() {
+    let s1 = String::from("hello"); // heap-allocated
+    let s2 = s1; // move, s1 ใช้ไม่ได้อีก
+    println!("{}", s1); 
+}
+```
+
+**Correct Code**
+
+```rust
+fn main() {
+    let s1 = String::from("hello"); // heap-allocated
+    let s2 = s1.clone();
+    let s2 = &s1;
+```
+
+**Why?**
+
+`กำหนดข้อมูล หรือเลือกใช้ข้อมูล ให้ไม่เกินขอบเขต`
+
+---
+
+### Mistake 2 — `[Range Out of Bounds]`
+
+**Problem**
+
+`ผิดเพราะ let s2 = s1 เป็นการ ย้าย ownership (Move) จาก s1 ไปให้ s2 ทำให้ s1 หมดสิทธิ์ใช้งาน จึงไม่สามารถ println!("{}", s1) ได้อีก`
 
 **Incorrect Code**
 
@@ -199,7 +230,7 @@ fn main() {
 
 ---
 
-### Mistake 2 — `[Cannot assign to data in an immutable reference]`
+### Mistake 3 — `[Cannot assign to data in an immutable reference]`
 
 **Problem**
 
@@ -237,7 +268,7 @@ fn main() {
 
 ---
 
-### Mistake 3 — `[cannot borrow `numbers` as mutable because it is also borrowed as immutable]`
+### Mistake 4 — `[cannot borrow `numbers` as mutable because it is also borrowed as immutable]`
 
 **Problem**
 
