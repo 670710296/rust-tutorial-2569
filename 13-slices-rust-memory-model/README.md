@@ -679,7 +679,7 @@ Rust vs. Java
 
 Java เน้นการจัดการ Memory อัตโนมัติด้วย Garbage Collector และไม่มี Pointer Arithmetic แบบ C/C++ ทำให้การใช้งาน Memory ค่อนข้างง่าย แต่การออกแบบของ Rust เลือกใช้ Ownership และ Lifetime แทน Garbage Collector เพื่อให้สามารถควบคุมทรัพยากรได้ละเอียดและคาดเดาได้มากขึ้น โดยยังรักษา Memory Safety ไว้
 
-เหตุผลด้านการออกแบบภาษา
+**เหตุผลด้านการออกแบบภาษา**
 
 แนวคิดของ Rust ในเรื่อง Slice ถูกออกแบบให้ตอบโจทย์ 2 อย่างพร้อมกัน คือ Performance และ Safety
 
