@@ -292,21 +292,34 @@ fn main() {
 
 **Problem**
 
-`[เขียนโจทย์]`
+`[กำหนดให้ numbers มีค่า [10, 20, 30, 40, 50] จงใช้ Slice เพื่อเลือกข้อมูล 20, 30, 40 และเปลี่ยนค่าเป็น 200, 300, 400 จากนั้นแสดงผลข้อมูลที่ถูกเปลี่ยนแปลงแล้ว โดยห้ามเปลี่ยนค่าใน numbers โดยตรง ให้แก้ไขข้อมูลผ่าน Slice เท่านั้น]`
 
 **Hint**
 
-`[คำใบ้]`
+`[ให้ใช้ Slice เพื่อเลือกเฉพาะข้อมูล 20, 30, 40 จาก numbers โดยกำหนดช่วงให้ถูกต้อง จากนั้นใช้การยืมแบบ Mutable เพื่อให้สามารถแก้ไขค่าผ่าน Slice ได้ และแสดงผล]`
 
 **Solution**
 
 ```rust
-// Solution code
+fn main() {
+    let mut numbers = [10, 20, 30, 40, 50];
+
+    let x = &mut numbers[1..4];
+
+    x[0] = 200;
+    x[1] = 300;
+    x[2] = 400;
+
+    println!("{:?}", x);
+}
 ```
 
 **Explanation**
 
-`[อธิบายแนวทางแก้]`
+`1.สร้าง Mutable Slice อ้างอิง index ที่ 1 ถึง 3 (ได้แก่ [20, 30, 40])// สร้าง Mutable Slice อ้างอิง index ที่ 1 ถึง 3 (ได้แก่ [20, 30, 40])
+ 2.แก้ไขค่าตำแหน่งแรกของ Slice (คือ 20 ใน numbers)
+ 3.แก้ไขค่าตำแหน่งที่สองของ Slice (คือ 30 ใน numbers)
+ 4.แก้ไขค่าตำแหน่งที่สามของ Slice (คือ 40 ใน numbers)`
 
 ---
 
@@ -314,21 +327,48 @@ fn main() {
 
 **Problem**
 
-`[เขียนโจทย์]`
+`[จงสร้าง Vector เก็บชุดตัวเลขจำนวนเต็ม (i32) ขนาด N ตัว (เช่น [1, 2, 3, 4, 5]) จากนั้นให้ทำการตรวจเช็คข้อมูลตัวเลขเดิมใน Vector:
+ถ้าเจอ เลขคู่ ให้ทำการเพิ่ม (Push) ค่า x *2 ต่อท้ายเข้าไปใน Vector
+ถ้าเจอ เลขคี่ ให้ทำการเพิ่ม (Push) ค่า x / 2 ต่อท้ายเข้าไปใน Vector
+เงื่อนไข:ต้องตรวจเช็คครบเฉพาะ N ตัวแรกเท่านั้น
+
+จากโจทย์ถ้าต้องการให้ Compile ผ่าน ตัวเลือกข้อไหนถูกต้อง
+
+A. for val in &numbers[..len] { if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }
+
+B. let slice_vals = numbers[..len].to_vec(); for val in slice_vals { if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }
+
+C. for i in 0..numbers.as_slice().len() { let val = &mut numbers[i]; if *val % 2 == 0 { numbers.push(*val * 2); } else { numbers.push(*val / 2); } }
+
+D. for i in 0..numbers.len() { let val = numbers[i]; if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }]`
 
 **Hint**
 
-`[คำใบ้]`
+`[ห้ามยืมอ่านข้อมูลค้างไว้ทั้ง Loop แล้วสั่งเพิ่มขนาด Vector พร้อมกัน]`
 
 **Solution**
 
 ```rust
-// Solution code
+fn main() {
+    let mut numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let len = numbers.len();
+
+    let slice_vals = numbers[..len].to_vec();
+    for val in slice_vals {
+        if val % 2 == 0 {
+            numbers.push(val * 2);
+        } else {
+            numbers.push(val / 2);
+        }
+    }
+
+    println!("{:?}", numbers);
+}
 ```
 
 **Explanation**
 
-`[อธิบายแนวทางแก้]`
+`[คัดลอกข้อมูลช่วง Slice ออกมาเป็น Vector ใหม่ด้วย .to_vec() เพื่อแยกหน่วยความจำออกจากกัน ทำให้สามารถอ่านค่าไปพร้อมกับแก้ไข numbers ได้โดยไม่ขัดต่อกฎ Borrow Checker ของ Rust ครับ]`
 
 ---
 
