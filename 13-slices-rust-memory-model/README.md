@@ -11,7 +11,7 @@
 
 | # | Name | Student ID | GitHub Username | Main Responsibility |
 |---|---|---|---|---|
-| 1 | นายปภังกร มงคลนรกิจ | 670710293 | `@[กรอก GitHub username]` | Concept + Short Code Illustration (สรุปแนวคิดหลัก + โค้ดตัวอย่างสั้น) |
+| 1 | นายปภังกร มงคลนรกิจ | 670710293 | `@670710293` | Concept + Short Code Illustration (สรุปแนวคิดหลัก + โค้ดตัวอย่างสั้น) |
 | 2 | นางสาวศิริกานต์ หรุ่นมาบแค | 670710294 | `@[กรอก GitHub username]` | Detailed Code + Live Demo (โค้ดเชิงลึก + สาธิตสด) |
 | 3 | นายสิรวิชญ์ เชี่ยวชาญ | 670710296 | `@670710296` | Rust vs Other Language + PPL Analysis (เปรียบเทียบภาษา + วิเคราะห์เชิง PPL) |
 | 4 | นายวีรภัทร พุฒหอม | 670710336 | `@670710336` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
@@ -33,73 +33,126 @@
 
 ## 3. Introduction
 
-`[เขียนเนื้อหาที่นี่ — ใช้โครงสร้างเดียวกับ rust_tutorial_template.md ฉบับเต็มที่ผู้สอนแจกให้]`
+อธิบายว่า Topic นี้คืออะไร มีความสำคัญอย่างไร และใช้แก้ปัญหาอะไรในการเขียนโปรแกรม
+
+`Topic นี้จะพูดถึงการแบ่งย่อยในตัวแปรต่างๆ ไม่ว่าจะเป้น List , Array , String หรืออื่นๆ และการจัดการ Memory ของภาษา Rust`
+
+`เริ่มที่การจัดการ Memory หากไม่มีการจัดการ Memory แบบ Rust`
+1) [ตัวแปรข้อมูลจะไม่ปลอดภัย เนื่องจากใครๆก็มาหยิบไปใช้ได้ แก้ข้อมูลได้เสมอ]
+2) [หากไม่มี memory Model ตัวข้อมูลจะมั่วซั่วไปหมด เก็บที่ไหนไปเรื่อย และจะทิ้งเป็น Garbage ไว้ใน Ram ซึ่งจะทำให้เปลืองทรัพยากรมากๆ]
+3) [Slicing ช่วยให้ลดการจองพื้นที่ Ram แบบไม่จำเป็นทิ้งไป]  
+
+`ส่วนในพาร์ทของ Memory Model ใน Rust จะมี Stack + Heap`  
+`โดย Memory Model : ชุดการจัดเก็บข้อมูล/ตัวแปร การใช้งาน การคืนความจำ โดยใช้หลัก Ownership , Borrowing  และ Lifetime`
+1) `Stack ใช้ Concept แบบ LIFO`  
+`จะเก็บค่าตัวแปรที่รู้ขนาดแน่นอนเท่านั้น เช่น integer,อาเรย์ที่กำหนดขนาดแล้ว`  
+2) `Heap ใช้เก็บค่าตัวแปรที่ไม่ทราบขนาดแน่นอน ( เพิ่มขึ้นหรือลดลงได้ตอน Compile )`  
+` โดยหลักการมันจะเก็บตัว pointer กับชื่อของตัวแปรไว้ที่ Stack แล้วให้ชี้มาที่ Heap ของค่านั้นๆ `  
+` จะเก็บตัวแปรประเภท String , Dynamic Collection เป็นต้น `  
+
+
+`ส่วนตัวของ Slices คือการแบ่งย่อยจากตัวเซตข้อมูลหลัก ไม่ว่าจะเป็น List , Array หรือ String เป็นต้น`  
+`ที่ช่วยทำให้เกิด Zero - Heap Allocation หรือก็คือ ไม่เกิดการจองข้อมูลใน Heap เพิ่มเติม`  
+`(แต่ยังคงเก็บใน stack นิดนึงนะ คือชื่อกับ Pointer เพื่อบ่งบอกว่าเราชี้ไปที่ Heap จุดไหน)`  
+
+`เช่น เรามี List หรือ Array ที่มีข้อมูลเป็น [2,3,5,6,7] แต่เราต้องการตั้งแต่ตัวที่ 3 ( คือเลข 5 ) เป็นต้นไป`  
+`เพื่อนำไปคำนวณต่อ ก็สามารถใช้การ slices เพื่อตัดแค่ข้อมูลที่ต้องการ แล้วนำมาใช้ต่อได้เลย`  
+
 
 ---
 
-*โครงสร้างเอกสารฉบับเต็ม (Key Concepts, Runnable Code Examples, Common Mistakes, Exercises, PPL Perspective, Rust vs Other Language, References, AI Usage Declaration, GitHub Contribution, Final Checklist) ให้ทำต่อจากจุดนี้ตาม Template หลักของวิชา (`rust_tutorial_template.md`) ที่แนบมากับใบมอบหมายงาน*
-
 ## 4. Key Concepts
 
-### 4.1 `[Concept 1]`
+### 4.1 `[Memory Model ของ Stack]`
 
 **คำอธิบาย**
 
-`[อธิบายแนวคิด]`
+`[Stack สำหรับเก็บค่าที่เป็น Imutable หรือค่าที่ถูกฟิคขนาดไว้แล้ว ในช่วงเวลานั้นๆ]`
 
 **ตัวอย่าง**
 
 ```rust
-fn main() {
-    println!("Hello, Rust!");
+fn main(){
+    let x = 60;
+    let y = 7;
+    let z = x + y;
 }
 ```
 
 **Explanation**
 
-`[อธิบายว่า code ทำงานอย่างไร]`
+`[ตัว Memory Model ของภาษา rust จะเก็บค่า x และ y เข้าไปใน stack ก่อน และให้มันมีค่าเป็น 60 และ 7 ตามลำดับ]`  
+`[จากนั้น Memory ของภาษา rust จะ อ่านค่า x และ y นำมาบวกกันแล้วเก็บเข้าไปในค่า z ของ stack]`  
+
 
 ---
 
-### 4.2 `[Concept 2]`
+### 4.2 `[Memory Model ของ Heap]`
 
-`[อธิบายแนวคิด]`
+`[Heap จะเป็นก้อนเก็บข้อมูลก้อนนึง สำหรับตัวแปรที่ยืดหยุ่นเรื่องขนาดระหว่างการคอมไพล์ โดยตัวแปรเหล่านั้นจะมีทั้งเก็บค่าไว้ที่ stack และ heap]`
+`[โดยหลักๆจะแบ่งเป็น 2 ประเภท 1.เก็บค่าใน stack เป็น thin pointer , 2.เก็บค่าใน stack เป็น fat pointer เพื่อชี้ข้อมูลไปที่ ก้อนใน heap]`
 
 ```rust
-// Rust code
+fn main(){
+    let s = String::from("Hello");
+    let myVec = vec![1, 2, 3, 5];
+}
 ```
+**Explanation**
+
+`เริ่มที่ตัว s จะสร้างก้อนheap ที่เก็บคำว่า ['H' , 'e' , 'l' , 'l' , 'o']ไว้ แล้วจะเก็บค่าใน stack เป็น pointer + len + capacity `
+`โดย pointer จะชี้ไปที่ก้อน heap`  
+`ส่วน myVec ก็จะทำงานในทำนองเดียวกัน`  
 
 ---
 
-### 4.3 `[Concept 3]`
+### 4.3 `Slicing`
 
-`[อธิบายแนวคิด]`
+`[การ Slice จะไม่ใช่การแย่ง owner หรือการแก้ค่าแต่อย่างใด แต่มันแค่การขออ่านค่าตรงตำแหน่งที่ต้องการพอดี]`  
+`[และอ่านไปเรื่อยๆตามจำนวนที่ขอ เช่น &s[1..3] แปลว่าจะขออ่านค่า ตั้งแต่ตัวที่ 1 จนถึงตัวที่ 2 ซึ่งมีความยาว = 2]`
 
 ```rust
-// Rust code
+fn main() {
+    let s = String::from(“Silpakorn”);
+    
+    // แบบที่ 1 จะได้ตัวเอง
+    let same = &s[..];
+    println!("Slices ได้ตัวเอง จะได้ {same}");
+
+    // ควรระวัง หากกำหนดเอง เนื่องจากการ Slice จะ Slice ถึงแค่ n-1
+    // แบบที่ 2 ตั้งแต่ตัวแรกถึงตัวที่เรากำหนด
+    let silp = &s[..3];
+    println!("Slices ถึงตัวที่ 3 จะได้ {silp}");
+
+    // 3 ตั้งแต่ตัวที่ i ถึงตัวที่ n ซึ่ง i กับ n เราสามารถกำหนดเองได้
+    let pako = &s[3..7];
+    println!("Slices ตั้งแต่ตัวที่ 3 - 7 จะได้ {pako}");
+
+    // 4 ตั้งแต่ตัวที่เรากำหนดเป็นต้นไป
+    let rn = &s[7..];
+    println!("Slices ตั้งแต่ตัวที่ 7 เป็นต้นไป จะได้ {rn}");
+
+}
 ```
 
----
+### 4.4 `&str vs .clone()`
 
-### 4.4 `[Concept 4 — ถ้ามี]`
-
-`[อธิบายแนวคิด]`
+`[&str : การยืมข้อความจากตัวแปรหลัก ( s )  โดยการใช้ ptr ชี้ไปยังตัวแปรนั้นๆ ( ใช้กับจำพวก slice ) ] `  
+`[.clone() : สร้างก้อน String บน heap ขึ้นมาใหม่ พร้อมคัดลอกข้อความจากตัวแปรที่ต้องการไปยังก้อน heap ใหม่ ] `  
 
 ```rust
-// Rust code
+fn main() {
+    let s = String::from("Hello");
+    let borrowed: &str = &s;
+    let copied = s.clone();
+
+    println!("s         = {s}");        // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ s 
+    println!("borrowed  = {borrowed}"); // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ s
+    println!("copied    = {copied}");   // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ Copied เอง
+}
 ```
 
----
 
-### 4.5 `[Concept 5 — ถ้ามี]`
-
-`[อธิบายแนวคิด]`
-
-```rust
-// Rust code
-```
-
----
 
 ## 5. Important Syntax / Rules
 
@@ -437,31 +490,214 @@ fn main() {
 
 ## 10. Rust vs. Other Language
 
-**Comparison Language:** `[Python / C / C++ / Java / Kotlin / ...]`
+**Comparison Language:** Python / C / C++ / Java
 
-| Aspect | Rust | Other Language |
-|---|---|---|
-| Syntax | `[อธิบาย]` | `[อธิบาย]` |
-| Semantics / Behavior | `[อธิบาย]` | `[อธิบาย]` |
-| Type System | `[อธิบาย]` | `[อธิบาย]` |
-| Memory Management | `[อธิบาย]` | `[อธิบาย]` |
-| Safety | `[อธิบาย]` | `[อธิบาย]` |
+| Aspect | Rust | Python | C | C++ | Java |
+|---|---|---|---|---|---|
+| Syntax | ใช้ `&[T]` สำหรับ slice และ `&str` สำหรับ string slice เช่น `&data[1..4]` | ใช้ slicing เช่น `data[1:4]` และ `text[1:4]` | ไม่มี slice type โดยตรง มักใช้ pointer ร่วมกับ length เช่น `int *p = &data[1]` | มี `std::span` และ `std::string_view` สำหรับมองข้อมูลบางช่วงโดยไม่เป็นเจ้าของ | Array ไม่มี slice โดยตรง มักใช้ `Arrays.copyOfRange()` ซึ่งสร้าง array ใหม่ หรือ `List.subList()` สำหรับ view |
+| Semantics / Behavior | Slice เป็น borrowed reference ไปยังข้อมูลเดิม ไม่ได้สร้างข้อมูลใหม่ และไม่เป็นเจ้าของข้อมูล | Slice ของ `list`, `str` โดยทั่วไปได้ข้อมูลใหม่ ส่วนตัวแปรเดิมยังเป็นเจ้าของข้อมูลของตัวเอง | Pointer เพียงชี้ไปยังตำแหน่ง Memory โปรแกรมเมอร์ต้องจัดการว่า pointer และ length ถูกต้อง | `span` / `string_view` เป็น non-owning view จึงไม่เป็นเจ้าของข้อมูล ต้องระวัง lifetime ของข้อมูลต้นทาง | การ slice array แบบ `copyOfRange()` เป็นการ Copy ข้อมูล ส่วน `subList()` เป็น view ที่อ้างอิง List เดิม |
+| Type System | Static + Strong typing มีชนิดชัดเจน เช่น `&[i32]`, `&str`, `Vec<i32>` | Dynamic typing ชนิดของตัวแปรถูกตรวจสอบตอน Runtime | Static typing แต่มี pointer และ implicit conversion หลายกรณี | Static + Strong typing มี pointer, reference, `span`, `string_view` | Static + Strong typing ไม่มี pointer arithmetic แบบ C/C++ |
+| Memory Management | ใช้ Ownership, Borrowing และ Lifetime โดยไม่มี Garbage Collector | จัดการ Memory อัตโนมัติตาม implementation เช่น reference counting/garbage collection | Manual memory management เช่น `malloc()` / `free()` | ใช้ RAII, destructor และ smart pointers ช่วยจัดการ Memory แต่ยังสามารถใช้ raw pointer ได้ | ใช้ Garbage Collector เป็นหลัก Object และ Array อยู่บน Heap ส่วน local references/stack frames อยู่ใน Stack |
+| Safety | เน้น Memory Safety ตั้งแต่ Compile Time เช่น ป้องกัน dangling reference และ use-after-free | มีการจัดการ Memory อัตโนมัติและตรวจสอบหลายอย่างตอน Runtime | Safety ต่ำกว่า เพราะสามารถเกิด dangling pointer, buffer overflow, use-after-free ได้ | ปลอดภัยกว่า C ในหลายด้านเมื่อใช้ RAII/modern C++ แต่ raw pointer และ lifetime ยังทำให้เกิดปัญหาได้ | มี bounds checking, ไม่มี pointer arithmetic และใช้ GC จึงลดปัญหา Memory บางประเภท |
 
 ### Rust Example
 
+Slice ของ Vector
 ```rust
-// Rust code
+fn main() {
+    let numbers = vec![10, 20, 30, 40, 50];
+
+    let part = &numbers[1..4];
+
+    println!("{:?}", part);
+}
 ```
+ผลลัพธ์
+```rust
+[20, 30, 40]
+```
+ตรงนี้ `part` ไม่ได้สร้าง `Vec` ใหม่ แต่เป็น Slice ที่ ยืมข้อมูลจาก `numbers`
 
-### `[Other Language]` Example
+ดังนั้น `numbers` เป็น Owner ส่วน `part` เป็น Borrower
 
+### Rust `&str` Example
+```rust
+fn main() {
+    let text = "Hello Rust";
+
+    let part: &str = &text[0..5];
+
+    println!("{}", part);
+}
+```
+ผลลัพธ์
+```rust
+Hello
+```
+`&str` เป็น String Slice ที่ ไม่ได้เป็นเจ้าของ String แต่เป็น reference ไปยังข้อมูล String ที่มีอยู่แล้ว
+
+จุดที่ต้องระวังคือ Rust String ใช้ UTF-8 ดังนั้น `&str` ใช้ byte range ไม่ใช่ตำแหน่งตัวอักษรแบบที่มองเห็น
+
+### Python Example
+
+Python มี slicing โดยตรงและเขียนง่ายมาก
 ```python
-# Other language code
+numbers = [10, 20, 30, 40, 50]
+
+part = numbers[1:4]
+
+print(part)
 ```
+ผลลัพธ์
+```python
+[20, 30, 40]
+```
+แต่พฤติกรรมต่างจาก Rust เพราะการ slice list แบบนี้โดยทั่วไปจะสร้าง list ใหม่
+
+จึงสามารถมองได้ประมาณว่า
+```
+numbers → [10,20,30,40,50]
+
+part    → [20,30,40] (object ใหม่)
+```
+Python จึงใช้งานง่ายกว่า แต่ไม่มีแนวคิด Ownership/Borrowing แบบ Rust ที่ Compiler ตรวจสอบความสัมพันธ์เหล่านี้
+
+### C Example
+
+C ไม่มี Slice เป็น Type โดยตรง ดังนั้นมักใช้ Pointer + Length
+```c
+#include <stdio.h>
+
+int main() {
+    int numbers[] = {10, 20, 30, 40, 50};
+
+    int *part = &numbers[1];
+    int length = 3;
+
+    for (int i = 0; i < length; i++) {
+        printf("%d ", part[i]);
+    }
+
+    return 0;
+}
+```
+ผลลัพธ์
+```c
+20 30 40
+```
+ตรงนี้
+```c
+int *part = &numbers[1];
+int length = 3;
+```
+ต้องใช้ Pointer บอกว่าเริ่มตรงไหน และต้องใช้ length บอกว่ามีข้อมูลกี่ตัว
+
+C ไม่ได้ตรวจสอบให้ว่า Pointer ยังถูกต้องหรือข้อมูลยังมีชีวิตอยู่
+
+จึงมีโอกาสเกิดปัญหา เช่น 
+
+- Dangling Pointer คือ Reference ที่ยังชี้ไปยังข้อมูลเดิม แต่ข้อมูลนั้นถูกทำลายหรือหมดอายุไปแล้ว
+- Use-After-Free คือการ นำ Memory ที่ถูกคืนหรือถูกปล่อยไปแล้วกลับมาใช้งานอีก
+- Invalid Memory Access คือการ เข้าถึง Memory ในตำแหน่งที่ไม่ควรเข้าถึง
+
+
+### C++ Example
+
+C++ มี std::span ซึ่งมีแนวคิดใกล้กับ Rust Slice มาก
+```cpp
+#include <iostream>
+#include <vector>
+#include <span>
+
+int main() {
+    std::vector<int> numbers = {10, 20, 30, 40, 50};
+
+    std::span<int> part(numbers.data() + 1, 3);
+
+    for (int x : part) {
+        std::cout << x << " ";
+    }
+
+    return 0;
+}
+```
+ผลลัพธ์
+```cpp
+20 30 40
+```
+std::span เป็น non-owning view หมายความว่าไม่ได้เป็นเจ้าของข้อมูล เช่นเดียวกับ Slice ของ Rust ในแง่แนวคิด
+
+แต่ความแตกต่างสำคัญคือ C++ ไม่ได้มี Ownership/Borrow Checker แบบ Rust ดังนั้นโปรแกรมเมอร์ยังต้องระวังว่า numbers ต้องมีอายุยาวพอที่จะให้ part ใช้งาน
+
+C++ ยังมี std::string_view สำหรับมองบางส่วนของ String โดยไม่ Copy ข้อมูล
+
+### Java Example
+
+Java ไม่มี Slice Type สำหรับ Array โดยตรง
+
+ตัวอย่าง
+```java
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        int[] numbers = {10, 20, 30, 40, 50};
+
+        int[] part = Arrays.copyOfRange(numbers, 1, 4);
+
+        System.out.println(Arrays.toString(part));
+    }
+}
+```
+ผลลัพธ์
+```java
+[20, 30, 40]
+```
+แต่ `Arrays.copyOfRange()` สร้าง Array ใหม่
+```
+numbers → [10,20,30,40,50]
+
+part    → [20,30,40] (Array ใหม่)
+```
+จึงต่างจาก Rust
+```rust
+let part = &numbers[1..4];
+```
+ที่ part เป็น reference ไปยังข้อมูลเดิม
+
+สำหรับ Collection อย่าง List Java สามารถใช้
+```java
+List<Integer> part = numbers.subList(1, 4);
+```
+ซึ่งมีลักษณะเป็น view ของ List เดิม มากกว่าการ Copy ทั้งชุด
 
 ### Analysis
 
-`[อธิบายความแตกต่างที่สำคัญ และเหตุผลด้านการออกแบบภาษา]`
+ความแตกต่างที่สำคัญระหว่าง Rust กับภาษาอื่นอยู่ที่ แนวคิดในการจัดการ Memory และการออกแบบ Slice โดย Rust พยายามให้โปรแกรมสามารถเข้าถึงข้อมูลเดิมได้โดยไม่ต้อง Copy ข้อมูล แต่ยังคงตรวจสอบความปลอดภัยของการอ้างอิงตั้งแต่ Compile Time
+
+Rust vs. Python
+
+Python ใช้ Syntax ของ Slice ที่ง่าย เช่น `data[1:4]` และจัดการ Memory ให้อัตโนมัติ ทำให้เขียนโปรแกรมได้สะดวก แต่ไม่ได้บังคับให้โปรแกรมเมอร์ระบุ Ownership หรือความสัมพันธ์ของ Reference แบบ Rust การออกแบบของ Rust จึงเน้นให้ผู้เขียนโปรแกรมควบคุมการยืมข้อมูลได้ชัดเจนขึ้น เพื่อให้เกิด Memory Safety โดยไม่ต้องพึ่ง Garbage Collector
+
+Rust vs. C
+
+C ไม่มี Slice type โดยตรง และมักใช้ Pointer กับ Length แทน ทำให้ควบคุม Memory ได้ละเอียดและมี Overhead ต่ำ แต่โปรแกรมเมอร์ต้องรับผิดชอบเรื่อง Pointer, Lifetime และขอบเขตของข้อมูลเอง Rust ออกแบบมาเพื่อลดปัญหาเหล่านี้ โดยให้ Slice เช่น `&[T]` เป็น Borrowed Reference และใช้ Ownership กับ Borrow Checker ตรวจสอบว่าการอ้างอิงยังถูกต้องอยู่
+
+Rust vs. C++
+
+C++ มีแนวคิดที่ใกล้ Rust มากขึ้น เช่น `std::span` และ `std::string_view` ซึ่งใช้เป็นมุมมองไปยังข้อมูลเดิมโดยไม่ต้อง Copy แต่ C++ ยังเปิดให้ใช้ Pointer และจัดการ Lifetime ได้หลายรูปแบบ ขณะที่ Rust ออกแบบกฎ Ownership และ Lifetime ให้เป็นส่วนหนึ่งของ Type System และให้ Compiler ตรวจสอบความสัมพันธ์ของ Reference อย่างเข้มงวดกว่า
+
+Rust vs. Java
+
+Java เน้นการจัดการ Memory อัตโนมัติด้วย Garbage Collector และไม่มี Pointer Arithmetic แบบ C/C++ ทำให้การใช้งาน Memory ค่อนข้างง่าย แต่การออกแบบของ Rust เลือกใช้ Ownership และ Lifetime แทน Garbage Collector เพื่อให้สามารถควบคุมทรัพยากรได้ละเอียดและคาดเดาได้มากขึ้น โดยยังรักษา Memory Safety ไว้
+
+เหตุผลด้านการออกแบบภาษา
+
+แนวคิดของ Rust ในเรื่อง Slice ถูกออกแบบให้ตอบโจทย์ 2 อย่างพร้อมกัน คือ Performance และ Safety
+
+ใน Rust Slice คือการอ้างอิงไปยังข้อมูลบางส่วนของข้อมูลเดิม โดยไม่จำเป็นต้องสร้างหรือ Copy ข้อมูลชุดใหม่ขึ้นมา ทำให้ประหยัด Memory และช่วยให้การทำงานมีประสิทธิภาพมากขึ้น อย่างไรก็ตาม Slice ไม่ได้เป็นเจ้าของข้อมูลนั้นเอง แต่เป็นเพียงการ Borrow ข้อมูลจากตัวแปรที่เป็น Owner ดังนั้น Rust จึงใช้แนวคิด Ownership, Borrowing และ Lifetime เพื่อควบคุมว่าข้อมูลสามารถถูกอ้างอิงและใช้งานได้นานแค่ไหน โดย Compiler จะตรวจสอบกฎเหล่านี้ตั้งแต่ Compile Time เพื่อป้องกันปัญหาที่เกี่ยวกับ Memory เช่น การอ้างอิงข้อมูลที่หมดอายุหรือการใช้ข้อมูลผิดช่วงเวลา
+
+ดังนั้น จุดเด่นของ Rust ไม่ได้อยู่ที่การมี Slice เพียงอย่างเดียว แต่คือการออกแบบให้ การอ้างอิงข้อมูลที่มีประสิทธิภาพสามารถใช้งานร่วมกับระบบ Ownership ได้อย่างปลอดภัย ซึ่งเป็นแนวคิดที่แตกต่างจาก Python และ Java ที่เน้นการจัดการ Memory อัตโนมัติ และแตกต่างจาก C/C++ ที่ให้อิสระในการจัดการ Memory มากกว่า
 
 ---
 
@@ -587,4 +823,3 @@ fn main() {
 **Submitted by:** `[Group XX]`
 
 **Date:** `[YYYY-MM-DD]`
-
