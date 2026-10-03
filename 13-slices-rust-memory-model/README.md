@@ -288,7 +288,7 @@ fn main() {
 
 > จัดทำแบบฝึกหัด **2 ข้อ** ที่สอดคล้องกับ Topic และมีระดับความยากเหมาะสม
 
-### Exercise 1 — `[ชื่อโจทย์]`
+### Exercise 1 — `[Rust_Compro_01]`
 
 **Problem**
 
@@ -323,7 +323,7 @@ fn main() {
 
 ---
 
-### Exercise 2 — `[ชื่อโจทย์]`
+### Exercise 2 — `[Rust_Compro_02]`
 
 **Problem**
 
