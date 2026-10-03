@@ -12,7 +12,7 @@
 | # | Name | Student ID | GitHub Username | Main Responsibility |
 |---|---|---|---|---|
 | 1 | นายปภังกร มงคลนรกิจ | 670710293 | `@670710293` | Concept + Short Code Illustration (สรุปแนวคิดหลัก + โค้ดตัวอย่างสั้น) |
-| 2 | นางสาวศิริกานต์ หรุ่นมาบแค | 670710294 | `@[กรอก GitHub username]` | Detailed Code + Live Demo (โค้ดเชิงลึก + สาธิตสด) |
+| 2 | นางสาวศิริกานต์ หรุ่นมาบแค | 670710294 | `@670710294` | Detailed Code + Live Demo (โค้ดเชิงลึก + สาธิตสด) |
 | 3 | นายสิรวิชญ์ เชี่ยวชาญ | 670710296 | `@670710296` | Rust vs Other Language + PPL Analysis (เปรียบเทียบภาษา + วิเคราะห์เชิง PPL) |
 | 4 | นายวีรภัทร พุฒหอม | 670710336 | `@[กรอก GitHub username]` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
 
