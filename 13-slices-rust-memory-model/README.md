@@ -237,6 +237,53 @@ fn main() {
 
 ---
 
+### Mistake 3 — `[cannot borrow `numbers` as mutable because it is also borrowed as immutable]`
+
+**Problem**
+
+`พยายามแก้ไขหรือเพิ่มข้อมูลลงใน Vector  ในขณะที่ยังมีตัวแปรยืมอ่านข้อมูลใน Vector นั้นอยู่`
+
+**Incorrect Code**
+
+```rust
+fn main() {
+    let mut numbers = vec![1, 2, 3];
+
+    for num in &numbers { // ยืมอ่านแบบ Immutable Borrow
+        if  num == 2 {
+            numbers.push(4); //Error: cannot borrow `numbers` as mutable
+        }
+    }
+}
+
+```
+
+**Correct Code**
+
+```rust
+fn main() {
+    let mut numbers = vec![1, 2, 3];
+    let len = numbers.len(); ก่อน
+
+    for i in 0..len {
+        if numbers[i] == 2 {
+            numbers.push(4);
+        }
+    }
+
+    println!("{:?}", numbers); 
+}
+
+```
+
+**Why?**
+
+`โค้ดแบบแรกพังเพราะ for num in &numbers เป็นการ ยืมอ่านค้างไว้ตลอดการวน Loop ทำให้ Vector ถูกล็อคไม่ให้แก้ไข ถ้าสั่ง .push() แล้ว Vector ต้องขยายพื้นที่บน Heap ตัวแปร num ที่ชี้อ่านอยู่จะกลายเป็น Pointer ชี้ไปที่ขยะ  ทันที
+เปลี่ยนมาใช้ for i in 0..len ซึ่งเป็นการ วน Loop ตามลำดับตัวเลข (0, 1, 2) แทน ไ	ม่ได้ยืมอ่าน Vector ค้างไว้ การอ่าน numbers[i] เกิดขึ้นและจบลงทันทีในบรรทัดนั้น บรรทัด numbers.push(4) จึงขอสิทธิ์แก้ไขได้อย่างปลอดภัย
+`
+
+---
+
 ## 8. Exercises
 
 > จัดทำแบบฝึกหัด **2 ข้อ** ที่สอดคล้องกับ Topic และมีระดับความยากเหมาะสม
