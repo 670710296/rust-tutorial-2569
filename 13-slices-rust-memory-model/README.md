@@ -167,51 +167,73 @@ fn main() {
 
 ## 7. Common Mistakes
 
-### Mistake 1 — `[ชื่อข้อผิดพลาด]`
+### Mistake 1 — `[Range Out of Bounds]`
 
 **Problem**
 
-`[อธิบายปัญหา]`
+`กำหนดช่วง Slice เกินขนาดของข้อมูล`
 
 **Incorrect Code**
 
 ```rust
-// Incorrect example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[1..4]; 
+}
 ```
 
 **Correct Code**
 
 ```rust
-// Correct example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[0..3]; 
+}
 ```
 
 **Why?**
 
-`[อธิบายสาเหตุ]`
+`กำหนดข้อมูล หรือเลือกใช้ข้อมูล ให้ไม่เกินขอบเขต`
 
 ---
 
-### Mistake 2 — `[ชื่อข้อผิดพลาด]`
+### Mistake 2 — `[Cannot assign to data in an immutable reference]`
 
 **Problem**
 
-`[อธิบายปัญหา]`
+`ใน Rust ถ้าเราใช้ & เพื่อยืมข้อมูล จะเป็นการ ยืมแบบอ่านอย่างเดียว
+ดังนั้นเราจะไม่สามารถเปลี่ยนค่าข้างใน Slice ได้`
 
 **Incorrect Code**
 
 ```rust
-// Incorrect example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[0..2];
+
+    x[0] = 100;
+}
 ```
 
 **Correct Code**
 
 ```rust
-// Correct example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &mut numbers[0..2];
+
+    x[0] = 100;
+}
 ```
 
 **Why?**
 
-`[อธิบายสาเหตุ]`
+`ใน Rust ถ้าเราใช้ & เพื่อยืมข้อมูล จะเป็นการ ยืมแบบอ่านอย่างเดียว ดังนั้นเราจะไม่สามารถเปลี่ยนค่าข้างใน Slice ได้
+ถ้าต้องการแก้ไขข้อมูล เราต้องใช้ &mut และประกาศข้อมูลด้วย mut เพื่อให้สามารถแก้ไขค่าได้`
 
 ---
 
