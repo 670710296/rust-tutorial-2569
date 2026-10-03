@@ -658,7 +658,7 @@ public class Main {
 ```java
 [20, 30, 40]
 ```
-แต่ Arrays.copyOfRange() สร้าง Array ใหม่
+แต่ `Arrays.copyOfRange()` สร้าง Array ใหม่
 ```
 numbers → [10,20,30,40,50]
 
