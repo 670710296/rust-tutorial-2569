@@ -273,7 +273,7 @@ fn main() {
 
 Rust ใช้ slice เพื่ออ้างอิงข้อมูลบางส่วนของ collection โดยไม่ต้องสร้าง collection ใหม่ขึ้นมา
 
-รูปแบบที่พบบ่อยคือ
+รูปแบบที่พบบ่อย คือ
 
 ```rust
 &collection[start..end]
