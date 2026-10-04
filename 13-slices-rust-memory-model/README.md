@@ -134,8 +134,29 @@ fn main() {
 
 }
 ```
+### 4.4 `Mutable Slicing`
 
-### 4.4 `&str vs .clone()`
+`[การ Mutable Slice จะเป็นการอนุญาตให้ตัวที่ยืมไปแก้ไขค่าได้]`  
+`[เมื่อแก้ไขค่าเสร็จ ตัวค่าที่แก้ไขจะถูกเปลี่ยนตามใน index ที่ slice ไปเท่านั้น]`
+
+```rust
+fn main() {
+    // Vec: ยืมเฉพาะช่วง index 1..3 แล้วแก้ค่าใน slice
+    let mut numbers = vec![10, 20, 30, 40];
+    let part: &mut [i32] = &mut numbers[1..3];
+    part[0] = 1;
+    part[1] = -20;
+    println!("Vec: {numbers:?}"); // [10, 1, -20, 40]
+
+    // mutable str เปลี่ยนจำนวนไบต์หรือเพิ่ม/ลบตัวอักษรไม่ได้
+    let mut text = String::from("hello");
+    let part: &mut str = &mut text[1..4];
+    part.make_ascii_uppercase();
+    println!("String: {text}"); // hELLo
+}
+```
+
+### 4.5 `&str vs .clone()`
 
 `[&str : การยืมข้อความจากตัวแปรหลัก ( s )  โดยการใช้ ptr ชี้ไปยังตัวแปรนั้นๆ ( ใช้กับจำพวก slice ) ] `  
 `[.clone() : สร้างก้อน String บน heap ขึ้นมาใหม่ พร้อมคัดลอกข้อความจากตัวแปรที่ต้องการไปยังก้อน heap ใหม่ ] `  
@@ -1168,7 +1189,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 1**
 
-`[สิ่งที่รับผิดชอบ]`
+`รับผิดชอบส่วน Concept + Short Code (3 - 4.5) , ทำสไลด์ในหน้า concept หลักๆ + มี short code เพื่อให้คนที่ยังไม่รุ้จักเข้าใจง่ายขึ้น, ใส่สิ่งที่ทุกคนจำเป็นต้องรู้จากเนื้อหาส่วนนี้หลักๆ`
 
 **Member 2**
 
@@ -1176,7 +1197,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 3**
 
-`[สิ่งที่รับผิดชอบ]`
+`รับผิดชอบหัวข้อ PPL Perspective (9.1–9.6), วิเคราะห์ Rust ในด้าน Syntax, Semantics, Type System, Memory/Resource Management, Abstraction และ Why Rust รวมถึงเปรียบเทียบ Rust กับ Python, C, C++ และ Java`
 
 **Member 4**
 
@@ -1190,14 +1211,25 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 > แนะนำให้มีอย่างน้อย **4 แหล่งอ้างอิง** และควรใช้เอกสารทางการเป็นหลัก
 
-1. `https://doc.rust-lang.org/std/primitive.slice.html`
-2. `https://doc.rust-lang.org/book/ch04-03-slices.html#the-slice-type`
-3. `https://doc.rust-lang.org/reference/memory-model.html`
-4. `https://notes.kodekloud.com/docs/Rust-Programming/Ownership/Rules-for-Slices/page`
-5. `https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#memory-and-allocation`
-6. `https://doc.rust-lang.org/std/primitive.str.html`
-7. `https://doc.rust-lang.org/book/ch08-02-strings.html`
-8. `https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html`
+1. The Rust Programming Language — Understanding Ownership, References and Borrowing, Slices
+`https://doc.rust-lang.org/book/`
+2. The Rust Reference — Slice Types & Reference Types
+`https://doc.rust-lang.org/reference/types/slice.html`
+3. Crate std - Primitive Type slice
+`https://doc.rust-lang.org/std/primitive.slice.html`
+5. Python Documentation — Common Sequence Operations / Slicing
+`https://docs.python.org/3/library/stdtypes.html`
+4. cppreference — C / C++ Arrays, Pointers and std::span
+`https://en.cppreference.com/w/c/language/array`
+`https://en.cppreference.com/w/cpp/container/span`
+5. Oracle Java Documentation — Arrays
+`https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html`
+6. Kodekloud - The Slice Type
+`https://notes.kodekloud.com/docs/Rust-Programming/Ownership/The-Slice-Type/page`
+7. Kodekloud - Rules for Slices
+`https://notes.kodekloud.com/docs/Rust-Programming/Ownership/Rules-for-Slices/page`
+8. The Rust Programming Language - Storing UTF-8 Encoded Text with Strings
+`https://doc.rust-lang.org/book/ch08-02-strings.html`
 
 ---
 
@@ -1207,8 +1239,12 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 | AI Tool | Purpose | How the Result Was Verified |
 |---|---|---|
-| `claude` | `ทำความเข้าใจโค้ด, แปลภาษา, หาความหมาย, เรียบเรียงการใช้ภาษาเพื่ออธิบายการทำงาน, หาแนวทางการแก้ไขเมื่อเกิด error` | `ตรวจสอบกับแฟล่งอ้างอิง official, ทดสอบโปรแกรมว่ารันได้ถูกต้องหรือไม่` |
-| `gemini` | `ทำความเข้าใจโค้ด, แปลภาษา, หาความหมาย,` | `ตรวจสอบกับแฟล่งอ้างอิง official` |
+
+| `ChatGPT` | `ช่วยอธิบายและเรียบเรียงหัวข้อ Slices & Rust Memory Model, PPL Perspective 9.1–9.6 และช่วยจัดโครงสร้าง Presentation` | `ตรวจสอบกับ Rust Book, Rust Reference และทดลอง/ตรวจสอบตัวอย่าง Code ด้วยตนเอง` |
+| `ChatGPT` | `ช่วยเปรียบเทียบ Rust กับ Python, C, C++ และ Java ในด้าน Syntax, Type System และ Memory Management` | `[ตรวจสอบแนวคิดและ Syntax กับเอกสาร Official ของแต่ละภาษา และตรวจสอบความถูกต้องของ Code` |
+| `Claude AI` | `ช่วยในด้านการอธิบายส่วน code และลองให้ Preview ทั้งสไลด์ และส่วนโค้ดว่าตรงตาม Concept มั้ย, ` | `ตรวจสอบกับเนื้อหาในเอกสารทางการอย่าง Rust Book ส่วนโค้ดลองไปรันใน Rust online complier เพื่อที่จะตรวจสอบว่า เกิด error จริงมั้ย ได้ผลลัพธ์ตามที่ต้องการถูกมั้ย` |
+| `Claude AI` | `ทำความเข้าใจโค้ด, หาความหมายของแต่ละ syntax, เรียบเรียงการใช้ภาษาเพื่ออธิบายการทำงาน, หาแนวทางการแก้ไขเมื่อเกิด error` | `ตรวจสอบกับแฟล่งอ้างอิง official, ทดสอบโปรแกรมว่ารันได้ถูกต้องหรือไม่` |
+| `Gemini` | `ทำความเข้าใจโค้ด, แปลภาษา, หาความหมายของแต่ละ syntax, สรุปเนื้อหาที่ต้องศึกษา` | `ตรวจสอบกับแหล่งอ้างอิง official, ทดสอบโปรแกรมว่ารันได้ถูกต้องหรือไม่` |
 
 ### Declaration
 
@@ -1270,12 +1306,12 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 ## Submission Information
 
-**Repository:** `[GitHub repository URL]`
+**Repository:** `github.com/670710296/rust-tutorial-2569/`
 
-**Chapter Path:** `[เช่น chapters/01-introduction/]`
+**Chapter Path:** `13-slices-rust-memory-model/`
 
 **Final PR:** `#[PR number]`
 
-**Submitted by:** `[Group XX]`
+**Submitted by:** `[Group 13]`
 
-**Date:** `[YYYY-MM-DD]`
+**Date:** `[2569-10-04]`
