@@ -1,25 +1,51 @@
-pub fn show_fat_pointer<T: std::fmt::Debug>(data: &[T]) {
-    let ptr = data.as_ptr();
-    let len = data.len();
+// pub fn first_word(s: &String) -> usize {
+//     let bytes = s.as_bytes();
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return i;
+//         }
+//     }
+//     s.len()
+// }
 
-    println!("ptr : {:p} | len : {}", ptr, len);
-    println!("size of &[T] : {} bytes", std::mem::size_of::<&[T]>());
-    println!("size of T : {} bytes", std::mem::size_of::<T>());
-
-    let s1 = &data[..data.len() - 2];
-    println!("slice ptr : {:p} | len : {}", s1.as_ptr(), s1.len());
-    println!("{:?}", s1);
+pub fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
 }
 
 fn main() {
-    let arr = [1, 2, 3, 4, 5, 6];
-    let vec = vec![1, 2, 3, 4, 5, 6];
+    let mut string = String::from("Silpakorn University");
+    let literal: &'static str = "Silpakorn";
 
-    println!("--- array ---");
-    println!("{:?}", arr);
-    show_fat_pointer(&arr);
+    let word = first_word(&string);
+    println!("word from String : {word}");
 
-    println!("--- vector ---");
-    println!("{:?}", vec);
-    show_fat_pointer(&vec);
+    let word = first_word(literal);
+    println!("word from literal : {word}");
+
+    string.clear();
+    println!("string after clear : {:?}", string);
+
+    let th = String::from("รองเท้าเนรคุณ");
+        println!("---------- {} ----------", th);
+    println!("len : {} bytes", th.len());
+    println!("char count : {} chars", th.chars().count());
+    println!("first letter : {}", &th[0..3]);
+    // &th[0..1]  // <- panic!
+
+    println!("---------- is char boundary ----------");
+    println!("1 byte : {}", th.is_char_boundary(1));
+    println!("3 bytes : {}", th.is_char_boundary(3));
+
+    println!("---------- ownership ----------");
+    let mut s1 = String::from("ญี่ปุ่น");
+    let s2 = "มาแล้ว";
+    s1.push_str(s2);
+    println!("{}", s1);
+    println!("s2 is {s2}");
 }
