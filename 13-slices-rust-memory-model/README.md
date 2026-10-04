@@ -294,11 +294,11 @@ from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไ
 //             return i;}}
 //     s.len()}
 
-pub fn first_word(s: &str) -> &str { //(s: &String) -> usize
+pub fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
     for (i, &item) in bytes.iter().enumerate() {
         if item == b' ' {
-            return &s[0..i];}} // return i;
+            return &s[0..i];}}
     &s[..]}
 
 pub fn string_and_str() {
@@ -358,7 +358,7 @@ s2 is มาแล้ว
 
 `&str ทุกตัวการันตีว่าเป็น UTF-8 ซึ่งภาษาอังกฤษ 1 ตัว = 1 byte จึงเท่ากันหมด และตัด [0..1] ได้ตัวแรกพอดี`
 
-`&th[0..1] จะ panic เพราะตัดกลางตัว byte ที่ไม่สมบูรณ์`
+`ภาษาไทยตัวแรกกินที่ 3 bytes การใช้ &th[0..1] จะ error เพราะตัดกลางตัว byte ที่ไม่สมบูรณ์`
 
 `is_char_boundary ใช้ถามว่า "ตำแหน่ง byte นี้เป็นจุดเริ่มของตัวอักษรไหม"`
 
