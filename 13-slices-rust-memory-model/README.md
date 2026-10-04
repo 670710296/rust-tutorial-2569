@@ -1229,7 +1229,6 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 | AI Tool | Purpose | How the Result Was Verified |
 |---|---|---|
-
 | `ChatGPT` | `ช่วยอธิบายและเรียบเรียงหัวข้อ Slices & Rust Memory Model, PPL Perspective 9.1–9.6 และช่วยจัดโครงสร้าง Presentation` | `ตรวจสอบกับ Rust Book, Rust Reference และทดลอง/ตรวจสอบตัวอย่าง Code ด้วยตนเอง` |
 | `ChatGPT` | `ช่วยเปรียบเทียบ Rust กับ Python, C, C++ และ Java ในด้าน Syntax, Type System และ Memory Management` | `[ตรวจสอบแนวคิดและ Syntax กับเอกสาร Official ของแต่ละภาษา และตรวจสอบความถูกต้องของ Code` |
 | `Claude AI` | `ช่วยในด้านการอธิบายส่วน code และลองให้ Preview ทั้งสไลด์ และส่วนโค้ดว่าตรงตาม Concept มั้ย, ` | `ตรวจสอบกับเนื้อหาในเอกสารทางการอย่าง Rust Book ส่วนโค้ดลองไปรันใน Rust online complier เพื่อที่จะตรวจสอบว่า เกิด error จริงมั้ย ได้ผลลัพธ์ตามที่ต้องการถูกมั้ย` |
