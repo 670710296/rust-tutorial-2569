@@ -1153,7 +1153,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 3**
 
-`[สิ่งที่รับผิดชอบ]`
+`รับผิดชอบหัวข้อ PPL Perspective (9.1–9.6), วิเคราะห์ Rust ในด้าน Syntax, Semantics, Type System, Memory/Resource Management, Abstraction และ Why Rust รวมถึงเปรียบเทียบ Rust กับ Python, C, C++ และ Java`
 
 **Member 4**
 
@@ -1187,8 +1187,8 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 | AI Tool | Purpose | How the Result Was Verified |
 |---|---|---|
-| `[เช่น ChatGPT]` | `[ใช้เพื่ออะไร]` | `[ตรวจสอบอย่างไร]` |
-| `[AI tool]` | `[ใช้เพื่ออะไร]` | `[ตรวจสอบอย่างไร]` |
+| `ChatGPT` | `ช่วยอธิบายและเรียบเรียงหัวข้อ Slices & Rust Memory Model, PPL Perspective 9.1–9.6 และช่วยจัดโครงสร้าง Presentation` | `ตรวจสอบกับ Rust Book, Rust Reference และทดลอง/ตรวจสอบตัวอย่าง Code ด้วยตนเอง` |
+| `ChatGPT` | `ช่วยเปรียบเทียบ Rust กับ Python, C, C++ และ Java ในด้าน Syntax, Type System และ Memory Management` | `[ตรวจสอบแนวคิดและ Syntax กับเอกสาร Official ของแต่ละภาษา และตรวจสอบความถูกต้องของ Code` |
 
 ### Declaration
 
