@@ -160,7 +160,7 @@ fn main() {
 | `Heap เก็บค่าขนาดยืดหยุ่น` | `ข้อมูลที่ขนาดเปลี่ยนได้ตอนรันถูกเก็บบน heap` | `String::from("Hello")` |
 | `Thin pointer` | `ที่อยู่อย่างเดียว (8 bytes)` | `&i32` |
 | `Fat pointer` | `ที่อยู่ + len (16 bytes)` | `&[T] / &str` |
-| `Slice แค้่ borrow ไม่ได้เป็นเจา้ของ` | `slice (&[T], &str) แค่ยืมดูข้อมูล เจ้าของตัวจริงยังเป็น String/Vec/array` | `let view: &str = &s;` |
+| `Slice แค่ borrow ไม่ได้เป็นเจ้าของ` | `slice (&[T], &str) แค่ยืมดูข้อมูล เจ้าของตัวจริงยังเป็น String/Vec/array` | `let view: &str = &s;` |
 | `.clone()` | `copy ข้อมูลบน heap จริงๆ ได้เจ้าของใหม่อีกก้อน` | `let b = s.clone();` |
 | `Slice = fat pointer (ptr + len)` | `เป็น "หน้าต่าง" มองข้อมูลต่อเนื่อง ไม่ copy ข้อมูล ชี้ได้ทั้ง stack และ heap` | `let s: &[i32] = &arr;` |
 | `&data[a..b]/[..n]/[n..]` | `ตัดช่วงโดยไม่ copy (ไม่รวม b)` | `&arr[1..4]` |
@@ -265,12 +265,38 @@ from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไ
 **Purpose:** `String/&str ใน Rust เป็น UTF-8 และ slice ด้วย byte index ไม่ใช่ตัวอักษร ส่วนท้ายเทียบ ownership ระหว่าง String กับ &str`
 
 ```rust
+// pub fn first_word(s: &String) -> usize {
+//     let bytes = s.as_bytes();
+//     for (i, &item) in bytes.iter().enumerate() {
+//         if item == b' ' {
+//             return i;
+//         }
+//     }
+//     s.len()
+// }
+
+pub fn first_word(s: &str) -> &str {
+    let bytes = s.as_bytes();
+    for (i, &item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &s[0..i];
+        }
+    }
+    &s[..]
+}
+
 fn main() {
-    let en = String::from("Rong tao nerakhun");
-    println!("---------- {} ----------", en);
-    println!("len : {} bytes", en.len());
-    println!("char count : {} chars", en.chars().count());
-    println!("first letter : {}", &en[0..1]);
+    let mut string = String::from("Silpakorn University");
+    let literal: &'static str = "Silpakorn";
+
+    let word = first_word(&string);
+    println!("word from String : {word}");
+
+    let word = first_word(literal);
+    println!("word from literal : {word}");
+
+    string.clear();
+    println!("string after clear : {:?}", string);
 
     let th = String::from("รองเท้าเนรคุณ");
         println!("---------- {} ----------", th);
@@ -295,10 +321,9 @@ fn main() {
 **Expected Output**
 
 ```text
----------- Rong tao nerakhun ----------
-len : 17 bytes
-char count : 17 chars
-first letter : R
+word from String : Silpakorn
+word from literal : Silpakorn
+string after clear : ""
 ---------- รองเท้าเนรคุณ ----------
 len : 39 bytes
 char count : 13 chars
@@ -306,21 +331,18 @@ first letter : ร
 ---------- is char boundary ----------
 1 byte : false
 3 bytes : true
----------- fat pointer ownership ----------
+---------- ownership ----------
 ญี่ปุ่นมาแล้ว
 s2 is มาแล้ว
 ```
 
 **Explanation**
 
-`String และ &str ใน Rust เก็บข้อความเป็น UTF-8 ซึ่งตัวอักษรแต่ละตัวใช้จำนวน byte ไม่เท่ากัน:
-ภาษาอังกฤษ: 1 byte ต่อตัว
-ภาษาไทย: 3 bytes ต่อตัว
-และการ slice ด้วย [a..b] นับเป็น byte ไม่ใช่จำนวนตัวอักษร`
+`(&String -> usize) คืนแค่ตำแหน่ง index ของช่องว่างแรก ปัญหาคือ index นี้ไม่ผูกกับสตริงเลย ถ้าเรียก string.clear() ทีหลัง index ก็ยังอยู่แต่ไม่มีความหมายแล้ว`
+
+`(&str -> &str) คืน slice ที่ชี้เข้าไปในสตริงเดิม ทำให้ borrow checker รู้ว่าผลลัพธ์ยังยืมสตริงอยู่ ถ้าสตริงต้นทางถูกแก้ไขหรือล้างขณะที่ slice ยังถูกใช้ จะ compile ไม่ผ่าน`
 
 `ภาษาอังกฤษ 1 ตัว = 1 byte จึงเท่ากันหมด และตัด [0..1] ได้ตัวแรกพอดี`
-
-`len() นับ byte ส่วน chars().count() นับ ตัวอักษร (char) จึงได้เลขต่างกัน`
 
 `ภาษาไทยตัวแรกกินที่ 3 bytes ต้องตัด [0..3] ถึงจะได้ "ร"`
 
@@ -1149,7 +1171,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 2**
 
-`[สิ่งที่รับผิดชอบ]`
+`เขียนและอธิบายโค้ด Rust โดยละเอียด พร้อมสาธิตสด ทำไสลด์นำเสนอ เขียน tutorial.md`
 
 **Member 3**
 
@@ -1167,10 +1189,14 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 > แนะนำให้มีอย่างน้อย **4 แหล่งอ้างอิง** และควรใช้เอกสารทางการเป็นหลัก
 
-1. `[The Rust Programming Language — Rust Book]`
-2. `[Rust by Example / Rust Reference]`
-3. `[Official documentation ที่เกี่ยวข้องกับ Topic]`
-4. `[แหล่งอ้างอิงเพิ่มเติม]`
+1. `https://doc.rust-lang.org/std/primitive.slice.html`
+2. `https://doc.rust-lang.org/book/ch04-03-slices.html#the-slice-type`
+3. `https://doc.rust-lang.org/reference/memory-model.html`
+4. `https://notes.kodekloud.com/docs/Rust-Programming/Ownership/Rules-for-Slices/page`
+5. `https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html#memory-and-allocation`
+6. `https://doc.rust-lang.org/std/primitive.str.html`
+7. `https://doc.rust-lang.org/book/ch08-02-strings.html`
+8. `https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html`
 
 ---
 
@@ -1180,8 +1206,8 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 | AI Tool | Purpose | How the Result Was Verified |
 |---|---|---|
-| `[เช่น ChatGPT]` | `[ใช้เพื่ออะไร]` | `[ตรวจสอบอย่างไร]` |
-| `[AI tool]` | `[ใช้เพื่ออะไร]` | `[ตรวจสอบอย่างไร]` |
+| `claude` | `ทำความเข้าใจโค้ด, แปลภาษา, หาความหมาย, เรียบเรียงการใช้ภาษาเพื่ออธิบายการทำงาน, หาแนวทางการแก้ไขเมื่อเกิด error` | `ตรวจสอบกับแฟล่งอ้างอิง official, ทดสอบโปรแกรมว่ารันได้ถูกต้องหรือไม่` |
+| `gemini` | `ทำความเข้าใจโค้ด, แปลภาษา, หาความหมาย,` | `ตรวจสอบกับแฟล่งอ้างอิง official` |
 
 ### Declaration
 
