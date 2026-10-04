@@ -283,7 +283,7 @@ fn main() {
     println!("1 byte : {}", th.is_char_boundary(1));
     println!("3 bytes : {}", th.is_char_boundary(3));
 
-    println!("---------- fat pointer ownership ----------");
+    println!("---------- ownership ----------");
     let mut s1 = String::from("ญี่ปุ่น");
     let s2 = "มาแล้ว";
     s1.push_str(s2);
