@@ -1243,12 +1243,12 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 ## Submission Information
 
-**Repository:** `[GitHub repository URL]`
+**Repository:** `github.com/670710296/rust-tutorial-2569/`
 
-**Chapter Path:** `[เช่น chapters/01-introduction/]`
+**Chapter Path:** `13-slices-rust-memory-model/`
 
 **Final PR:** `#[PR number]`
 
-**Submitted by:** `[Group XX]`
+**Submitted by:** `[Group 13]`
 
-**Date:** `[YYYY-MM-DD]`
+**Date:** `[2569-10-04]`
