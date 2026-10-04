@@ -134,8 +134,29 @@ fn main() {
 
 }
 ```
+### 4.4 `Mutable Slicing`
 
-### 4.4 `&str vs .clone()`
+`[การ Mutable Slice จะเป็นการอนุญาตให้ตัวที่ยืมไปแก้ไขค่าได้]`  
+`[เมื่อแก้ไขค่าเสร็จ ตัวค่าที่แก้ไขจะถูกเปลี่ยนตามใน index ที่ slice ไปเท่านั้น]`
+
+```rust
+fn main() {
+    // Vec: ยืมเฉพาะช่วง index 1..3 แล้วแก้ค่าใน slice
+    let mut numbers = vec![10, 20, 30, 40];
+    let part: &mut [i32] = &mut numbers[1..3];
+    part[0] = 1;
+    part[1] = -20;
+    println!("Vec: {numbers:?}"); // [10, 1, -20, 40]
+
+    // mutable str เปลี่ยนจำนวนไบต์หรือเพิ่ม/ลบตัวอักษรไม่ได้
+    let mut text = String::from("hello");
+    let part: &mut str = &mut text[1..4];
+    part.make_ascii_uppercase();
+    println!("String: {text}"); // hELLo
+}
+```
+
+### 4.5 `&str vs .clone()`
 
 `[&str : การยืมข้อความจากตัวแปรหลัก ( s )  โดยการใช้ ptr ชี้ไปยังตัวแปรนั้นๆ ( ใช้กับจำพวก slice ) ] `  
 `[.clone() : สร้างก้อน String บน heap ขึ้นมาใหม่ พร้อมคัดลอกข้อความจากตัวแปรที่ต้องการไปยังก้อน heap ใหม่ ] `  
@@ -1145,7 +1166,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 1**
 
-`[สิ่งที่รับผิดชอบ]`
+`รับผิดชอบส่วน Concept + Short Code (3 - 4.5) , ทำสไลด์ในหน้า concept หลักๆ + มี short code เพื่อให้คนที่ยังไม่รุ้จักเข้าใจง่ายขึ้น, ใส่สิ่งที่ทุกคนจำเป็นต้องรู้จากเนื้อหาส่วนนี้หลักๆ`
 
 **Member 2**
 
@@ -1189,6 +1210,8 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 |---|---|---|
 | `ChatGPT` | `ช่วยอธิบายและเรียบเรียงหัวข้อ Slices & Rust Memory Model, PPL Perspective 9.1–9.6 และช่วยจัดโครงสร้าง Presentation` | `ตรวจสอบกับ Rust Book, Rust Reference และทดลอง/ตรวจสอบตัวอย่าง Code ด้วยตนเอง` |
 | `ChatGPT` | `ช่วยเปรียบเทียบ Rust กับ Python, C, C++ และ Java ในด้าน Syntax, Type System และ Memory Management` | `[ตรวจสอบแนวคิดและ Syntax กับเอกสาร Official ของแต่ละภาษา และตรวจสอบความถูกต้องของ Code` |
+
+| `Claude AI` | `ช่วยในด้านการอธิบายส่วน code และลองให้ Preview ทั้งสไลด์ และส่วนโค้ดว่าตรงตาม Concept มั้ย` | `ตรวจสอบกับเนื้อหาในเอกสารทางการอย่าง Rust Book ส่วนโค้ดลองไปรันใน Rust online complier เพื่อที่จะตรวจสอบว่า เกิด error จริงมั้ย ได้ผลลัพธ์ตามที่ต้องการถูกมั้ย` |
 
 ### Declaration
 
