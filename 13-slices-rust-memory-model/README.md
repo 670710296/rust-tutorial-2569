@@ -177,34 +177,29 @@ fn main() {
 
 | Syntax / Rule | Meaning | Example |
 |---|---|---|
-| `Stack เก็บค่าขนาดคงที่` | `ค่าที่รู้ขนาดตอนคอมไพล์ถูกเก็บบน stack และคืนที่อัตโนมัติเมื่อจบ scope` | `let x = 60;` |
-| `Heap เก็บค่าขนาดยืดหยุ่น` | `ข้อมูลที่ขนาดเปลี่ยนได้ตอนรันถูกเก็บบน heap` | `String::from("Hello")` |
-| `Thin pointer` | `ที่อยู่อย่างเดียว (8 bytes)` | `&i32` |
-| `Fat pointer` | `ที่อยู่ + len (16 bytes)` | `&[T] / &str` |
-| `Slice แค่ borrow ไม่ได้เป็นเจ้าของ` | `slice (&[T], &str) แค่ยืมดูข้อมูล เจ้าของตัวจริงยังเป็น String/Vec/array` | `let view: &str = &s;` |
+| `String::from(...)` | `การเรียก associated function from ของชนิด String เพื่อ สร้าง String (owned, อยู่บน heap) จากข้อมูลอื่น` | `let s = String::from("Hello");` |
+| `&data[a..b]/[..n]/[n..]` | `ตัดช่วงโดยไม่ copy` | `&arr[1..4]` |
 | `clone()` | `copy ข้อมูลบน heap จริงๆ ได้เจ้าของใหม่อีกก้อน` | `let b = s.clone();` |
-| `Slice = fat pointer (ptr + len)` | `เป็น "หน้าต่าง" มองข้อมูลต่อเนื่อง ไม่ copy ข้อมูล ชี้ได้ทั้ง stack และ heap` | `let s: &[i32] = &arr;` |
-| `&data[a..b]/[..n]/[n..]` | `ตัดช่วงโดยไม่ copy (ไม่รวม b)` | `&arr[1..4]` |
 | `as_ptr()` | `ดึงที่อยู่ (Pointer) ในหน่วยความจำ` | `data.as_ptr()` |
-| `len()` | `หาขนาดหรือความยาวของข้อมูล` | `data.len()` |
-| `Array vs Vec` | `Array ขนาดคงที่อยู่ stack, Vec เก็บข้อมูลบน heap` | `[1, 2, 3] vs vec![1, 2, 3]` |
-| `&[T] ในพารามิเตอร์` | `รับได้ทั้ง array, Vec และ slice จึงยืดหยุ่นกว่า &Vec<T>` | `fn sum(data: &[i32])` |
-| `String owns, &str borrows` | `String แก้ไข/ขยายได้, &str ยืมดูอย่างเดียว` | `s1.push_str(s2)` |
-| `String slicing` | `String slice ใช้ตำแหน่ง byte ไม่ใช่ char` | `&th[0..3]` |
+| `len()` | `หาขนาดหรือความยาวของข้อมูล` | `data.len()` ||
+| `as_bytes()` | `เมธอดของ str ที่ มองสตริงเป็น byte slice (&[u8]) โดยไม่ copy ข้อมูล` | `let bytes = s.as_bytes();` |
 | `chars().count()` | `ใช้นับจำนวนอักขระ` | `th.chars().count()` |
 | `is_char_boundary(i)` | `เช็คว่าตำแหน่ง byte นี้เป็นจุดเริ่มของตัวอักษรไหม` | `th.is_char_boundary(3)` |
 | `split_at_mut(mid)` | `แบ่งเป็นสองส่วนที่ไม่ทับกันให้ขอ &mut พร้อมกันได้` | `let (l, r) = a.split_at_mut(3);` |
 | `iter_mut()` | `แก้ค่าทีละตัว` | `for x in s.iter_mut() { *x += 1 }` |
-| `as_bytes()` | `เมธอดของ str ที่ มองสตริงเป็น byte slice (&[u8]) โดยไม่ copy ข้อมูล` | `let bytes = s.as_bytes();` |
 
 ### Important Rules
 
 1. `Slice ต้องชี้ไปที่ข้อมูลที่ใช้งานได้จริงเสมอ`
-2. `กับข้อมูลชิ้นหนึ่ง จะมี mutable slice (&mut) ได้ 1 ตัว หรือ immutable slice (&) กี่ตัวก็ได้ แต่ ห้ามมีทั้งสองแบบพร้อมกัน`
-3. `Slice ต้อง อยู่ไม่นานกว่า ข้อมูลที่มันอ้างอิง`
-4. `ทุกค่าใน Rust มี เจ้าของ (owner) เสมอ`
-5. `ณ เวลาหนึ่งมี เจ้าของได้แค่ 1 ตัวเท่านั้น`
-6. `เมื่อเจ้าของ จบ scope (ออกจาก { }) ค่านั้นจะถูก drop คือคืนหน่วยความจำให้อัตโนมัติ`
+2. `Slice แค่ borrow ไม่ได้เป็นเจ้าของ`
+3. `กับข้อมูลชิ้นหนึ่ง จะมี mutable slice (&mut) ได้ 1 ตัว หรือ immutable slice (&) กี่ตัวก็ได้ แต่ ห้ามมีทั้งสองแบบพร้อมกัน`
+4. `Slice ต้อง อยู่ไม่นานกว่า ข้อมูลที่มันอ้างอิง`
+5. `ทุกค่าใน Rust มี เจ้าของ (owner) เสมอ`
+6. `ณ เวลาหนึ่งมี เจ้าของได้แค่ 1 ตัวเท่านั้น`
+7. `เมื่อเจ้าของ จบ scope (ออกจาก { }) ค่านั้นจะถูก drop คือคืนหน่วยความจำให้อัตโนมัติ`
+8. `Array ขนาดคงที่อยู่ stack, Vec เก็บข้อมูลบน heap`
+9. `String แก้ไข/ขยายได้, &str ยืมดูอย่างเดียว`
+10. `String slice ใช้ตำแหน่ง byte ไม่ใช่ char`
 
 ---
 
