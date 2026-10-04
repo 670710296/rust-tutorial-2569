@@ -190,47 +190,279 @@ fn main() {
 
 > **ข้อกำหนด:** Code ทุกตัวต้อง Compile และ Run ได้จริงก่อนนำมาใส่ในเอกสาร
 
-### Example 1 — `[ชื่อ Example]`
+### Example 1 — `Slice is "Fat Pointer"`
 
-**Purpose:** `[ต้องการสาธิตอะไร]`
+**Purpose:** `สาธิตว่า slice (&[T]) คือ fat pointer ที่เก็บค่า 2 อย่างคือ address ของข้อมูล (ptr) และ จำนวนสมาชิก (len) ไม่ใช่ pointer ธรรมดา`
 
 ```rust
+pub fn show_fat_pointer<T: std::fmt::Debug>(data: &[T]) {
+    let ptr = data.as_ptr();
+    let len = data.len();
+
+    println!("ptr : {:p} | len : {}", ptr, len);
+    println!("size of &[T] : {} bytes", std::mem::size_of::<&[T]>());
+    println!("size of T : {} bytes", std::mem::size_of::<T>());
+
+    let s1 = &data[..data.len() - 2];
+    println!("slice ptr : {:p} | len : {}", s1.as_ptr(), s1.len());
+    println!("{:?}", s1);
+}
+
 fn main() {
-    // Write your runnable Rust code here
+    let arr = [1, 2, 3, 4, 5, 6];
+    let vec = vec![1, 2, 3, 4, 5, 6];
+
+    println!("--- array ---");
+    println!("{:?}", arr);
+    show_fat_pointer(&arr);
+
+    println!("--- vector ---");
+    println!("{:?}", vec);
+    show_fat_pointer(&vec);
 }
 ```
 
 **Expected Output**
 
 ```text
-[expected output]
+--- array ---
+[1, 2, 3, 4, 5, 6]
+ptr : 0x78442ff7c0 | len : 6
+size of &[T] : 16 bytes
+size of T : 4 bytes
+slice ptr : 0x78442ff7c0 | len : 4
+[1, 2, 3, 4]
+--- vector ---
+[1, 2, 3, 4, 5, 6]
+ptr : 0x274cf800830 | len : 6
+size of &[T] : 16 bytes
+size of T : 4 bytes
+slice ptr : 0x274cf800830 | len : 4
+[1, 2, 3, 4]
 ```
 
 **Explanation**
 
-`[อธิบาย code ทีละส่วนที่สำคัญ]`
+`&[T] (slice) ไม่ได้เก็บแค่ที่อยู่ในหน่วยความจำ แต่เก็บ 2 อย่างคู่กัน:
+ptr คือที่อยู่ของสมาชิกตัวแรก
+len คือจำนวนสมาชิก
+เรียกว่า fat pointer เพราะใหญ่กว่า pointer ธรรมดาที่เก็บแค่ที่อยู่อย่างเดียว (thin pointer)
+
+data.as_ptr() และ data.len() ดึง ptr กับ len ออกมาจาก slice
+
+size_of::<&[T]>() จะได้ 16 bytes บนเครื่อง 64-bit (pointer 8 + len 8) ซึ่งเป็น fat pointer
+
+size_of::<T>() คือขนาดสมาชิก 1 ตัว (ในที่นี้ i32 = 4 bytes)`
+
+ข้อควรระวัง
+fatptr.len - 2 ถ้า slice ยาวน้อยกว่า 2 จะเกิด underflow (panic ใน debug mode) ถ้าจะใช้จริงควรเช็กความยาวก่อน
+from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไม่ได้ว่า ptr/len ถูกต้อง ในโค้ดนี้ปลอดภัยเพราะเราตัดให้สั้นลงเท่านั้น
 
 ---
 
-### Example 2 — `[ชื่อ Example]`
+### Example 2 — `String and &str`
 
-**Purpose:** `[ต้องการสาธิตอะไร]`
+**Purpose:** `String/&str ใน Rust เป็น UTF-8 และ slice ด้วย byte index ไม่ใช่ตัวอักษร ส่วนท้ายเทียบ ownership ระหว่าง String กับ &str`
 
 ```rust
 fn main() {
-    // Write your runnable Rust code here
+    let en = String::from("Rong tao nerakhun");
+    println!("---------- {} ----------", en);
+    println!("len : {} bytes", en.len());
+    println!("char count : {} chars", en.chars().count());
+    println!("first letter : {}", &en[0..1]);
+
+    let th = String::from("รองเท้าเนรคุณ");
+        println!("---------- {} ----------", th);
+    println!("len : {} bytes", th.len());
+    println!("char count : {} chars", th.chars().count());
+    println!("first letter : {}", &th[0..3]);
+    // &th[0..1]  // <- panic!
+
+    println!("---------- is char boundary ----------");
+    println!("1 byte : {}", th.is_char_boundary(1));
+    println!("3 bytes : {}", th.is_char_boundary(3));
+
+    println!("---------- fat pointer ownership ----------");
+    let mut s1 = String::from("ญี่ปุ่น");
+    let s2 = "มาแล้ว";
+    s1.push_str(s2);
+    println!("{}", s1);
+    println!("s2 is {s2}");
 }
 ```
 
 **Expected Output**
 
 ```text
-[expected output]
+---------- Rong tao nerakhun ----------
+len : 17 bytes
+char count : 17 chars
+first letter : R
+---------- รองเท้าเนรคุณ ----------
+len : 39 bytes
+char count : 13 chars
+first letter : ร
+---------- is char boundary ----------
+1 byte : false
+3 bytes : true
+---------- fat pointer ownership ----------
+ญี่ปุ่นมาแล้ว
+s2 is มาแล้ว
 ```
 
 **Explanation**
 
-`[อธิบาย code]`
+`String และ &str ใน Rust เก็บข้อความเป็น UTF-8 ซึ่งตัวอักษรแต่ละตัวใช้จำนวน byte ไม่เท่ากัน:
+ภาษาอังกฤษ: 1 byte ต่อตัว
+ภาษาไทย: 3 bytes ต่อตัว
+และการ slice ด้วย [a..b] นับเป็น byte ไม่ใช่จำนวนตัวอักษร
+
+ภาษาอังกฤษ 1 ตัว = 1 byte จึงเท่ากันหมด และตัด [0..1] ได้ตัวแรกพอดี
+
+len() นับ byte ส่วน chars().count() นับ ตัวอักษร (char) จึงได้เลขต่างกัน
+
+ภาษาไทยตัวแรกกินที่ 3 bytes ต้องตัด [0..3] ถึงจะได้ "ร"
+
+&th[0..1] จะ panic เพราะตัดกลางตัว byte ที่ไม่สมบูรณ์
+
+is_char_boundary ใช้ถามว่า "ตำแหน่ง byte นี้เป็นจุดเริ่มของตัวอักษรไหม"
+
+s1 เป็น String คือ เป็นเจ้าของ ข้อมูล แก้ไข/ขยายได้
+
+s2 เป็น &str คือ fat pointer (ptr + len) แค่ "ยืมดู" ข้อมูล เป็นเจ้าของไม่ได้
+
+push_str แค่ยืม s2 มา copy ข้อความเข้า heap ของ s1 จึงไม่ได้เอา s2 ไป และยังใช้ s2 ต่อได้`
+
+---
+
+### Example 3 — `Mutable Slices`
+
+**Purpose:** `mutable slice (&mut [T]) แก้ข้อมูลต้นทางได้โดยตรง และ กฎ borrow ของ Rust ห้ามมี &mut ซ้อนกันบนข้อมูลก้อนเดียว พร้อมวิธีแก้ด้วย split_at_mut`
+
+```rust
+pub fn transform_even_odd(slice: &mut [i32]) {
+    for x in slice.iter_mut() {
+        if *x % 2 == 0 {
+            *x *= 2;
+        } else {
+            *x -= 1;
+}}}
+
+fn main() {
+    let mut num = [1, 2, 3, 4, 5, 6];
+    println!("before:  {:?}", num);
+    transform_even_odd(&mut num);
+    println!("after: {:?}", num);
+
+    // let s1 = &mut num[..2];
+    // let s2 = &mut num[1..];   // error
+
+    // transform_even_odd(s1);
+    // transform_even_odd(s2);
+
+    let (left, right) = num.split_at_mut(3);
+    // println!("numbers : {:?}", num); // error
+    left[0] = 111;
+    right[0] = 999;
+    println!("left : {:?}", left);
+    println!("right : {:?}", right);
+    // println!("numbers : {:?}", num);
+}
+```
+
+**Expected Output**
+
+```text
+before:  [1, 2, 3, 4, 5, 6]
+after: [0, 4, 2, 8, 4, 12]
+left : [111, 4, 2]
+right : [999, 4, 12]
+```
+
+**Explanation**
+
+`iter_mut() ให้ &mut i32 ของแต่ละตัว
+
+*x คือการ "ตามไปที่ค่าจริง" เพื่ออ่าน/แก้
+
+ฟังก์ชันรับ &mut [i32] จึงแก้ข้อมูลของคนเรียกได้โดยตรง ไม่ต้อง return
+
+ต้องประกาศ let mut ไม่งั้นแก้ไม่ได้
+
+&mut numbers (ชนิด &mut [i32; 6]) ถูกแปลงเป็น &mut [i32] ให้อัตโนมัติ
+
+s1 กับ s2 ถูกใช้ต่อหลังจากนั้นทั้งคู่ Rust จึงไม่ยอมให้คอมไพล์
+
+หมายเหตุ: จริงๆ Rust ไม่ได้ดูว่า range ทับกันจริงหรือเปล่า แค่เห็นว่า numbers[..] ถูก &mut ยืมซ้ำก็ error แล้ว แม้ range จะไม่ทับกัน (เช่น [..2] กับ [3..]) ก็ยัง error เพราะมันตรวจ range ตอนคอมไพล์ไม่ได้
+
+ใช้ split_at_mut แบ่ง slice เป็น 2 ส่วนที่ ไม่ทับกันแน่นอน
+
+ตราบใดที่ left/right ยังถูกใช้อยู่ข้างล่าง numbers ถือว่า ถูกยืมแบบ mutable อยู่ จะอ่าน numbers ตรงๆ ไม่ได้`
+
+---
+
+### Example 4 — `Slice methods`
+
+**Purpose:** `เมธอดใช้งานกับ slice ได้ มีทั้งการดู/แบ่งข้อมูลแบบไม่ copy (zero-copy view) และการแปลงเป็นข้อมูลที่เป็นเจ้าของ (to_vec)`
+
+```rust
+fn main() {
+    let nums = [1, 2, 3, 4, 5, 6, 7];
+    
+    match &nums[..] {
+        [first, .., last] => println!("first / last : {first} / {last}"),
+        [only] => println!("only one: {only}"),
+        [] => println!("empty"),
+    }
+    // println!("first / last : {:?} / {:?}", nums.first(), nums.last());
+    match &nums[..] {
+        [first, rest @ ..] => println!("first / rest : {first} / {rest:?}"),
+        [] => {}
+    }
+    println!(".get(10) : {:?}", nums.get(10));
+    println!(".split_at(3) : {:?}", nums.split_at(3));
+    println!(".chunks(3) : {:?}", nums.chunks(3).collect::<Vec<_>>());
+    println!(".windows(3) : {:?}", nums.windows(3).collect::<Vec<_>>());
+    println!(".contains(&4) : {}", nums.contains(&4));
+ 
+    let owned: Vec<i32> = nums[..3].to_vec();
+    println!("to_vec : {:?}", owned);
+}
+```
+
+**Expected Output**
+
+```text
+first / last : 1 / 7
+first / rest : 1 / [2, 3, 4, 5, 6, 7]
+.get(10) : None
+.split_at(3) : ([1, 2, 3], [4, 5, 6, 7])
+.chunks(3) : [[1, 2, 3], [4, 5, 6], [7]]
+.windows(3) : [[1, 2, 3], [2, 3, 4], [3, 4, 5], [4, 5, 6], [5, 6, 7]]
+.contains(&4) : true
+to_vec : [1, 2, 3]
+```
+
+**Explanation**
+
+`first / last/ rest หาข้อมูลตัวแรก/สุดท้ายในอาเรย์/ตัวที่เหลือ (ถ้า slice ว่างจะได้ None)
+
+get(x) index เกินขอบเขตได้ None ไม่ panic (ต่างจาก nums[10] ที่ panic)
+
+split_at(x) แบ่งเป็น 2 slice ที่ index x คืนเป็น tuple (ไม่ copy)
+
+chunks(x) ตัดเป็นท่อนละ x ไม่ซ้อนกัน ท่อนสุดท้ายเหลือเท่าไรก็เท่านั้น
+
+windows(x) "หน้าต่าง" ขนาด x เลื่อนทีละ 1 ซ้อนกัน
+
+contains(&x) เช็กว่ามีค่านี้อยู่ไหม รับ reference และวนหาแบบเรียงทีละตัว
+
+to_vec() คัดลอก ไปสร้าง Vec ใหม่บน heap ที่เป็นเจ้าของข้อมูลเอง
+
+เมธอดส่วนใหญ่ (first, get, split_at, chunks, windows) คืน slice/reference = ยืมข้อมูลเดิม ไม่ copy
+
+มีแค่ to_vec() ที่ copy จริง`
 
 ---
 
