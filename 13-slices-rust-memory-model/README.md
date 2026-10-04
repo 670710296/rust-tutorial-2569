@@ -688,7 +688,7 @@ fn main() {
 
 **Problem**
 
-`[จงสร้าง Vector เก็บชุดตัวเลขจำนวนเต็ม (i32) ขนาด N ตัว (เช่น [1, 2, 3, 4, 5]) จากนั้นให้ทำการตรวจเช็คข้อมูลตัวเลขเดิมใน Vector:
+[จงสร้าง Vector เก็บชุดตัวเลขจำนวนเต็ม (i32) ขนาด N ตัว (เช่น [1, 2, 3, 4, 5]) จากนั้นให้ทำการตรวจเช็คข้อมูลตัวเลขเดิมใน Vector:
 ถ้าเจอ เลขคู่ ให้ทำการเพิ่ม (Push) ค่า x *2 ต่อท้ายเข้าไปใน Vector
 ถ้าเจอ เลขคี่ ให้ทำการเพิ่ม (Push) ค่า x / 2 ต่อท้ายเข้าไปใน Vector
 เงื่อนไข:ต้องตรวจเช็คครบเฉพาะ N ตัวแรกเท่านั้น
@@ -701,7 +701,7 @@ B. let slice_vals = numbers[..len].to_vec(); for val in slice_vals { if val % 2 
 
 C. for i in 0..numbers.as_slice().len() { let val = &mut numbers[i]; if *val % 2 == 0 { numbers.push(*val * 2); } else { numbers.push(*val / 2); } }
 
-D. for i in 0..numbers.len() { let val = numbers[i]; if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }]`
+D. for i in 0..numbers.len() { let val = numbers[i]; if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }]
 
 **Hint**
 
@@ -1240,7 +1240,9 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **รายละเอียดการใช้ AI**
 
-`[อธิบายว่าใช้ AI ในขั้นตอนใด และสมาชิกตรวจสอบผลลัพธ์อย่างไร]`
+สมาชิกใช้ AI ในหลายขั้นตอนของการทำงาน ได้แก่ ใช้ ChatGPT ช่วยอธิบายและเรียบเรียงหัวข้อ Slices & Rust Memory Model และ PPL Perspective 9.1–9.6 ช่วยจัดโครงสร้าง Presentation รวมถึงช่วยเปรียบเทียบ Rust กับ Python, C, C++ และ Java ในด้าน Syntax, Type System และ Memory Management นอกจากนี้ใช้ Claude AI ช่วยอธิบาย Code, ทดลองแนวทางแก้ไขข้อผิดพลาด และช่วยทำความเข้าใจ Syntax และแนวคิดต่าง ๆ ส่วน Gemini ใช้ช่วยแปลภาษา อธิบายความหมายของ Syntax และสรุปเนื้อหาที่ต้องศึกษา
+
+หลังจากได้ผลลัพธ์จาก AI สมาชิกจะ ตรวจสอบข้อมูลกับเอกสารอ้างอิงที่เป็น Official เช่น Rust Book และ Rust Reference รวมถึงตรวจสอบ Syntax และแนวคิดกับเอกสารของแต่ละภาษา และ ทดลอง Compile / รัน Code ด้วยตนเอง เพื่อดูว่าผลลัพธ์ตรงกับคำอธิบายหรือไม่ จากนั้นจึงนำข้อมูลที่ตรวจสอบแล้วมาเรียบเรียงและปรับใช้ใน Presentation อีกครั้ง
 
 ---
 
