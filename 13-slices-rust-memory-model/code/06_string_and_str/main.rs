@@ -5,11 +5,11 @@
 //             return i;}}
 //     s.len()}
 
-pub fn first_word(s: &str) -> &str { //(s: &String) -> usize
+pub fn first_word(s: &str) -> &str {
     let bytes = s.as_bytes();
     for (i, &item) in bytes.iter().enumerate() {
         if item == b' ' {
-            return &s[0..i];}} // return i;
+            return &s[0..i];}}
     &s[..]}
 
 pub fn string_and_str() {
