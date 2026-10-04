@@ -14,7 +14,7 @@
 | 1 | นายปภังกร มงคลนรกิจ | 670710293 | `@670710293` | Concept + Short Code Illustration (สรุปแนวคิดหลัก + โค้ดตัวอย่างสั้น) |
 | 2 | นางสาวศิริกานต์ หรุ่นมาบแค | 670710294 | `@670710294` | Detailed Code + Live Demo (โค้ดเชิงลึก + สาธิตสด) |
 | 3 | นายสิรวิชญ์ เชี่ยวชาญ | 670710296 | `@670710296` | Rust vs Other Language + PPL Analysis (เปรียบเทียบภาษา + วิเคราะห์เชิง PPL) |
-| 4 | นายวีรภัทร พุฒหอม | 670710336 | `@[กรอก GitHub username]` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
+| 4 | นายวีรภัทร พุฒหอม | 670710336 | `@670710336` | Exercises + Common Mistakes + Challenge (แบบฝึกหัด + ข้อผิดพลาดที่พบบ่อย + คำถามท้าทาย) |
 
 > แก้ไข GitHub Username ของแต่ละคนให้ตรงกับบัญชีจริงก่อนเริ่มทำงาน (ผู้สอนจะใช้คอลัมน์นี้เชิญเป็น collaborator ของ repository)
 
@@ -106,15 +106,51 @@ fn main(){
 
 ---
 
-### 4.3 `[Slice]`
+### 4.3 `Slicing`
 
-`[อธิบายแนวคิด]`
+`[การ Slice จะไม่ใช่การแย่ง owner หรือการแก้ค่าแต่อย่างใด แต่มันแค่การขออ่านค่าตรงตำแหน่งที่ต้องการพอดี]`  
+`[และอ่านไปเรื่อยๆตามจำนวนที่ขอ เช่น &s[1..3] แปลว่าจะขออ่านค่า ตั้งแต่ตัวที่ 1 จนถึงตัวที่ 2 ซึ่งมีความยาว = 2]`
 
 ```rust
-// Rust code
+fn main() {
+    let s = String::from(“Silpakorn”);
+    
+    // แบบที่ 1 จะได้ตัวเอง
+    let same = &s[..];
+    println!("Slices ได้ตัวเอง จะได้ {same}");
+
+    // ควรระวัง หากกำหนดเอง เนื่องจากการ Slice จะ Slice ถึงแค่ n-1
+    // แบบที่ 2 ตั้งแต่ตัวแรกถึงตัวที่เรากำหนด
+    let silp = &s[..3];
+    println!("Slices ถึงตัวที่ 3 จะได้ {silp}");
+
+    // 3 ตั้งแต่ตัวที่ i ถึงตัวที่ n ซึ่ง i กับ n เราสามารถกำหนดเองได้
+    let pako = &s[3..7];
+    println!("Slices ตั้งแต่ตัวที่ 3 - 7 จะได้ {pako}");
+
+    // 4 ตั้งแต่ตัวที่เรากำหนดเป็นต้นไป
+    let rn = &s[7..];
+    println!("Slices ตั้งแต่ตัวที่ 7 เป็นต้นไป จะได้ {rn}");
+
+}
 ```
 
----
+### 4.4 `&str vs .clone()`
+
+`[&str : การยืมข้อความจากตัวแปรหลัก ( s )  โดยการใช้ ptr ชี้ไปยังตัวแปรนั้นๆ ( ใช้กับจำพวก slice ) ] `  
+`[.clone() : สร้างก้อน String บน heap ขึ้นมาใหม่ พร้อมคัดลอกข้อความจากตัวแปรที่ต้องการไปยังก้อน heap ใหม่ ] `  
+
+```rust
+fn main() {
+    let s = String::from("Hello");
+    let borrowed: &str = &s;
+    let copied = s.clone();
+
+    println!("s         = {s}");        // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ s 
+    println!("borrowed  = {borrowed}"); // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ s
+    println!("copied    = {copied}");   // จะได้ Hello โดยที่อยู่ Heap จะเป็นของ Copied เอง
+}
+```
 
 
 
@@ -184,51 +220,151 @@ fn main() {
 
 ## 7. Common Mistakes
 
-### Mistake 1 — `[ชื่อข้อผิดพลาด]`
+### Mistake 1 — `[borrow of moved value: `s1`]`
 
 **Problem**
 
-`[อธิบายปัญหา]`
+`ผิดเพราะ let s2 = s1 เป็นการ ย้าย ownership (Move) จาก s1 ไปให้ s2 ทำให้ s1 หมดสิทธิ์ใช้งาน จึงไม่สามารถ println!("{}", s1) ได้อีก`
 
 **Incorrect Code**
 
 ```rust
-// Incorrect example
+fn main() {
+    let s1 = String::from("hello"); // heap-allocated
+    let s2 = s1; // move, s1 ใช้ไม่ได้อีก
+    println!("{}", s1); 
+}
 ```
 
 **Correct Code**
 
 ```rust
-// Correct example
+fn main() {
+    let s1 = String::from("hello");
+    let s2 = s1.clone();
+    let s2 = &s1;
 ```
 
 **Why?**
 
-`[อธิบายสาเหตุ]`
+`เลือกใช้ .clone() หรือยืมค่าด้วย &s1 แทนการเขียนวิธีแก้รวมกันหมดเพื่อไม่ให้เกิดการประกาศตัวแปร s2 ซ้ำซ้อน`
 
 ---
 
-### Mistake 2 — `[ชื่อข้อผิดพลาด]`
+### Mistake 2 — `[Range Out of Bounds]`
 
 **Problem**
 
-`[อธิบายปัญหา]`
+`ผิดเพราะ let s2 = s1 เป็นการ ย้าย ownership (Move) จาก s1 ไปให้ s2 ทำให้ s1 หมดสิทธิ์ใช้งาน จึงไม่สามารถ println!("{}", s1) ได้อีก`
 
 **Incorrect Code**
 
 ```rust
-// Incorrect example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[1..4]; 
+}
 ```
 
 **Correct Code**
 
 ```rust
-// Correct example
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[0..3]; 
+}
 ```
 
 **Why?**
 
-`[อธิบายสาเหตุ]`
+`กำหนดข้อมูล หรือเลือกใช้ข้อมูล ให้ไม่เกินขอบเขต`
+
+---
+
+### Mistake 3 — `[Cannot assign to data in an immutable reference]`
+
+**Problem**
+
+`ใน Rust ถ้าเราใช้ & เพื่อยืมข้อมูล จะเป็นการ ยืมแบบอ่านอย่างเดียว
+ดังนั้นเราจะไม่สามารถเปลี่ยนค่าข้างใน Slice ได้`
+
+**Incorrect Code**
+
+```rust
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &numbers[0..2];
+
+    x[0] = 100;
+}
+```
+
+**Correct Code**
+
+```rust
+fn main() {
+    let numbers = [10, 20, 30];
+
+    let x = &mut numbers[0..2];
+
+    x[0] = 100;
+}
+```
+
+**Why?**
+
+`ใน Rust ถ้าเราใช้ & เพื่อยืมข้อมูล จะเป็นการ ยืมแบบอ่านอย่างเดียว ดังนั้นเราจะไม่สามารถเปลี่ยนค่าข้างใน Slice ได้
+ถ้าต้องการแก้ไขข้อมูล เราต้องใช้ &mut และประกาศข้อมูลด้วย mut เพื่อให้สามารถแก้ไขค่าได้`
+
+---
+
+### Mistake 4 — `[cannot borrow `numbers` as mutable because it is also borrowed as immutable]`
+
+**Problem**
+
+`พยายามแก้ไขหรือเพิ่มข้อมูลลงใน Vector  ในขณะที่ยังมีตัวแปรยืมอ่านข้อมูลใน Vector นั้นอยู่`
+
+**Incorrect Code**
+
+```rust
+fn main() {
+    let mut numbers = vec![1, 2, 3];
+
+    for num in &numbers { // ยืมอ่านแบบ Immutable Borrow
+        if  num == 2 {
+            numbers.push(4); //Error: cannot borrow `numbers` as mutable
+        }
+    }
+}
+
+```
+
+**Correct Code**
+
+```rust
+fn main() {
+    let mut numbers = vec![1, 2, 3];
+    let len = numbers.len(); ก่อน
+
+    for i in 0..len {
+        if numbers[i] == 2 {
+            numbers.push(4);
+        }
+    }
+
+    println!("{:?}", numbers); 
+}
+
+```
+
+**Why?**
+
+`โค้ดแบบแรกพังเพราะ for num in &numbers เป็นการ ยืมอ่านค้างไว้ตลอดการวน Loop ทำให้ Vector ถูกล็อคไม่ให้แก้ไข ถ้าสั่ง .push() แล้ว Vector ต้องขยายพื้นที่บน Heap ตัวแปร num ที่ชี้อ่านอยู่จะกลายเป็น Pointer ชี้ไปที่ขยะ  ทันที
+เปลี่ยนมาใช้ for i in 0..len ซึ่งเป็นการ วน Loop ตามลำดับตัวเลข (0, 1, 2) แทน ไ	ม่ได้ยืมอ่าน Vector ค้างไว้ การอ่าน numbers[i] เกิดขึ้นและจบลงทันทีในบรรทัดนั้น บรรทัด numbers.push(4) จึงขอสิทธิ์แก้ไขได้อย่างปลอดภัย
+`
 
 ---
 
@@ -236,47 +372,87 @@ fn main() {
 
 > จัดทำแบบฝึกหัด **2 ข้อ** ที่สอดคล้องกับ Topic และมีระดับความยากเหมาะสม
 
-### Exercise 1 — `[ชื่อโจทย์]`
+### Exercise 1 — `[Rust_Compro_01]`
 
 **Problem**
 
-`[เขียนโจทย์]`
+`[กำหนดให้ numbers มีค่า [10, 20, 30, 40, 50] จงใช้ Slice เพื่อเลือกข้อมูล 20, 30, 40 และเปลี่ยนค่าเป็น 200, 300, 400 จากนั้นแสดงผลข้อมูลที่ถูกเปลี่ยนแปลงแล้ว โดยห้ามเปลี่ยนค่าใน numbers โดยตรง ให้แก้ไขข้อมูลผ่าน Slice เท่านั้น]`
 
 **Hint**
 
-`[คำใบ้]`
+`[ให้ใช้ Slice เพื่อเลือกเฉพาะข้อมูล 20, 30, 40 จาก numbers โดยกำหนดช่วงให้ถูกต้อง จากนั้นใช้การยืมแบบ Mutable เพื่อให้สามารถแก้ไขค่าผ่าน Slice ได้ และแสดงผล]`
 
 **Solution**
 
 ```rust
-// Solution code
+fn main() {
+    let mut numbers = [10, 20, 30, 40, 50];
+
+    let x = &mut numbers[1..4];
+
+    x[0] = 200;
+    x[1] = 300;
+    x[2] = 400;
+
+    println!("{:?}", x);
+}
 ```
 
 **Explanation**
 
-`[อธิบายแนวทางแก้]`
+`1.สร้าง Mutable Slice อ้างอิง index ที่ 1 ถึง 3 (ได้แก่ [20, 30, 40])// สร้าง Mutable Slice อ้างอิง index ที่ 1 ถึง 3 (ได้แก่ [20, 30, 40])
+ 2.แก้ไขค่าตำแหน่งแรกของ Slice (คือ 20 ใน numbers)
+ 3.แก้ไขค่าตำแหน่งที่สองของ Slice (คือ 30 ใน numbers)
+ 4.แก้ไขค่าตำแหน่งที่สามของ Slice (คือ 40 ใน numbers)`
 
 ---
 
-### Exercise 2 — `[ชื่อโจทย์]`
+### Exercise 2 — `[Rust_Compro_02]`
 
 **Problem**
 
-`[เขียนโจทย์]`
+`[จงสร้าง Vector เก็บชุดตัวเลขจำนวนเต็ม (i32) ขนาด N ตัว (เช่น [1, 2, 3, 4, 5]) จากนั้นให้ทำการตรวจเช็คข้อมูลตัวเลขเดิมใน Vector:
+ถ้าเจอ เลขคู่ ให้ทำการเพิ่ม (Push) ค่า x *2 ต่อท้ายเข้าไปใน Vector
+ถ้าเจอ เลขคี่ ให้ทำการเพิ่ม (Push) ค่า x / 2 ต่อท้ายเข้าไปใน Vector
+เงื่อนไข:ต้องตรวจเช็คครบเฉพาะ N ตัวแรกเท่านั้น
+
+จากโจทย์ถ้าต้องการให้ Compile ผ่าน ตัวเลือกข้อไหนถูกต้อง
+
+A. for val in &numbers[..len] { if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }
+
+B. let slice_vals = numbers[..len].to_vec(); for val in slice_vals { if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }
+
+C. for i in 0..numbers.as_slice().len() { let val = &mut numbers[i]; if *val % 2 == 0 { numbers.push(*val * 2); } else { numbers.push(*val / 2); } }
+
+D. for i in 0..numbers.len() { let val = numbers[i]; if val % 2 == 0 { numbers.push(val * 2); } else { numbers.push(val / 2); } }]`
 
 **Hint**
 
-`[คำใบ้]`
+`[ห้ามยืมอ่านข้อมูลค้างไว้ทั้ง Loop แล้วสั่งเพิ่มขนาด Vector พร้อมกัน]`
 
 **Solution**
 
 ```rust
-// Solution code
+fn main() {
+    let mut numbers = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
+    let len = numbers.len();
+
+    let slice_vals = numbers[..len].to_vec();
+    for val in slice_vals {
+        if val % 2 == 0 {
+            numbers.push(val * 2);
+        } else {
+            numbers.push(val / 2);
+        }
+    }
+
+    println!("{:?}", numbers);
+}
 ```
 
 **Explanation**
 
-`[อธิบายแนวทางแก้]`
+`[คัดลอกข้อมูลช่วง Slice ออกมาเป็น Vector ใหม่ด้วย .to_vec() เพื่อแยกหน่วยความจำออกจากกัน ทำให้สามารถอ่านค่าไปพร้อมกับแก้ไข numbers ได้โดยไม่ขัดต่อกฎ Borrow Checker ของ Rust ครับ]`
 
 ---
 
@@ -658,7 +834,7 @@ public class Main {
 ```java
 [20, 30, 40]
 ```
-แต่ Arrays.copyOfRange() สร้าง Array ใหม่
+แต่ `Arrays.copyOfRange()` สร้าง Array ใหม่
 ```
 numbers → [10,20,30,40,50]
 
@@ -696,7 +872,7 @@ Rust vs. Java
 
 Java เน้นการจัดการ Memory อัตโนมัติด้วย Garbage Collector และไม่มี Pointer Arithmetic แบบ C/C++ ทำให้การใช้งาน Memory ค่อนข้างง่าย แต่การออกแบบของ Rust เลือกใช้ Ownership และ Lifetime แทน Garbage Collector เพื่อให้สามารถควบคุมทรัพยากรได้ละเอียดและคาดเดาได้มากขึ้น โดยยังรักษา Memory Safety ไว้
 
-เหตุผลด้านการออกแบบภาษา
+**เหตุผลด้านการออกแบบภาษา**
 
 แนวคิดของ Rust ในเรื่อง Slice ถูกออกแบบให้ตอบโจทย์ 2 อย่างพร้อมกัน คือ Performance และ Safety
 
