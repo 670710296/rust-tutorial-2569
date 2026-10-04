@@ -726,10 +726,17 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 > แนะนำให้มีอย่างน้อย **4 แหล่งอ้างอิง** และควรใช้เอกสารทางการเป็นหลัก
 
-1. `[The Rust Programming Language — Rust Book]`
-2. `[Rust by Example / Rust Reference]`
-3. `[Official documentation ที่เกี่ยวข้องกับ Topic]`
-4. `[แหล่งอ้างอิงเพิ่มเติม]`
+1. The Rust Programming Language — Understanding Ownership, References and Borrowing, Slices
+`https://doc.rust-lang.org/book/`
+2. The Rust Reference — Slice Types & Reference Types
+`https://doc.rust-lang.org/reference/types/slice.html`
+3. Python Documentation — Common Sequence Operations / Slicing
+`https://docs.python.org/3/library/stdtypes.html`
+4. cppreference — C / C++ Arrays, Pointers and std::span
+`https://en.cppreference.com/w/c/language/array`
+`https://en.cppreference.com/w/cpp/container/span`
+5. Oracle Java Documentation — Arrays
+`https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html`
 
 ---
 
