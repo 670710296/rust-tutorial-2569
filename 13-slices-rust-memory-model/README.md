@@ -291,32 +291,24 @@ from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไ
 //     let bytes = s.as_bytes();
 //     for (i, &item) in bytes.iter().enumerate() {
 //         if item == b' ' {
-//             return i;
-//         }
-//     }
-//     s.len()
-// }
+//             return i;}}
+//     s.len()}
 
-pub fn first_word(s: &str) -> &str {
+pub fn first_word(s: &str) -> &str { //(s: &String) -> usize
     let bytes = s.as_bytes();
     for (i, &item) in bytes.iter().enumerate() {
         if item == b' ' {
-            return &s[0..i];
-        }
-    }
-    &s[..]
-}
+            return &s[0..i];}} // return i;
+    &s[..]}
 
-fn main() {
+pub fn string_and_str() {
     let mut string = String::from("Silpakorn University");
     let literal: &'static str = "Silpakorn";
 
     let word = first_word(&string);
     println!("word from String : {word}");
-
     let word = first_word(literal);
     println!("word from literal : {word}");
-
     string.clear();
     println!("string after clear : {:?}", string);
 
@@ -324,14 +316,14 @@ fn main() {
         println!("---------- {} ----------", th);
     println!("len : {} bytes", th.len());
     println!("char count : {} chars", th.chars().count());
-    println!("first letter : {}", &th[0..3]);
-    // &th[0..1]  // <- panic!
+    //println!("first letter : {}", &th[0..1]); // error
 
     println!("---------- is char boundary ----------");
     println!("1 byte : {}", th.is_char_boundary(1));
     println!("3 bytes : {}", th.is_char_boundary(3));
+    println!("first letter : {}", &th[0..3]);
 
-    println!("---------- ownership ----------");
+    println!("---------- fat pointer ownership ----------");
     let mut s1 = String::from("ญี่ปุ่น");
     let s2 = "มาแล้ว";
     s1.push_str(s2);
@@ -349,11 +341,11 @@ string after clear : ""
 ---------- รองเท้าเนรคุณ ----------
 len : 39 bytes
 char count : 13 chars
-first letter : ร
 ---------- is char boundary ----------
 1 byte : false
 3 bytes : true
----------- ownership ----------
+first letter : ร
+---------- fat pointer ownership ----------
 ญี่ปุ่นมาแล้ว
 s2 is มาแล้ว
 ```
@@ -364,9 +356,7 @@ s2 is มาแล้ว
 
 `(&str -> &str) คืน slice ที่ชี้เข้าไปในสตริงเดิม ทำให้ borrow checker รู้ว่าผลลัพธ์ยังยืมสตริงอยู่ ถ้าสตริงต้นทางถูกแก้ไขหรือล้างขณะที่ slice ยังถูกใช้ จะ compile ไม่ผ่าน`
 
-`ภาษาอังกฤษ 1 ตัว = 1 byte จึงเท่ากันหมด และตัด [0..1] ได้ตัวแรกพอดี`
-
-`ภาษาไทยตัวแรกกินที่ 3 bytes ต้องตัด [0..3] ถึงจะได้ "ร"`
+`&str ทุกตัวการันตีว่าเป็น UTF-8 ซึ่งภาษาอังกฤษ 1 ตัว = 1 byte จึงเท่ากันหมด และตัด [0..1] ได้ตัวแรกพอดี`
 
 `&th[0..1] จะ panic เพราะตัดกลางตัว byte ที่ไม่สมบูรณ์`
 
@@ -1193,7 +1183,7 @@ Java เน้นการจัดการ Memory อัตโนมัติ�
 
 **Member 2**
 
-`เขียนและอธิบายโค้ด Rust โดยละเอียด พร้อมสาธิตสด ทำไสลด์นำเสนอ เขียน tutorial.md`
+`รับผิดชอบการเขียนและอธิบายโค้ด Rust ในหัวข้อเพิ่มเติมเกี่ยวกับ fat pointer ใน slice, String และ &str slicing, mutable slice, และเมธอดอื่นๆที่เกี่ยวข้อง พร้อมสาธิตสด ทำไสลด์นำเสนอ และเขียน tutorial.md (5 - 6)`
 
 **Member 3**
 
