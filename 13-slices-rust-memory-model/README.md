@@ -246,17 +246,17 @@ slice ptr : 0x274cf800830 | len : 4
 `&[T] (slice) ไม่ได้เก็บแค่ที่อยู่ในหน่วยความจำ แต่เก็บ 2 อย่างคู่กัน:
 ptr คือที่อยู่ของสมาชิกตัวแรก
 len คือจำนวนสมาชิก
-เรียกว่า fat pointer เพราะใหญ่กว่า pointer ธรรมดาที่เก็บแค่ที่อยู่อย่างเดียว (thin pointer)
+เรียกว่า fat pointer เพราะใหญ่กว่า pointer ธรรมดาที่เก็บแค่ที่อยู่อย่างเดียว (thin pointer)`
 
-data.as_ptr() และ data.len() ดึง ptr กับ len ออกมาจาก slice
+`data.as_ptr() และ data.len() ดึง ptr กับ len ออกมาจาก slice`
 
-size_of::<&[T]>() จะได้ 16 bytes บนเครื่อง 64-bit (pointer 8 + len 8) ซึ่งเป็น fat pointer
+`size_of::<&[T]>() จะได้ 16 bytes บนเครื่อง 64-bit (pointer 8 + len 8) ซึ่งเป็น fat pointer`
 
-size_of::<T>() คือขนาดสมาชิก 1 ตัว (ในที่นี้ i32 = 4 bytes)`
+`size_of::<T>() คือขนาดสมาชิก 1 ตัว (ในที่นี้ i32 = 4 bytes)`
 
-ข้อควรระวัง
+`ข้อควรระวัง
 fatptr.len - 2 ถ้า slice ยาวน้อยกว่า 2 จะเกิด underflow (panic ใน debug mode) ถ้าจะใช้จริงควรเช็กความยาวก่อน
-from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไม่ได้ว่า ptr/len ถูกต้อง ในโค้ดนี้ปลอดภัยเพราะเราตัดให้สั้นลงเท่านั้น
+from_raw_parts เป็น unsafe เพราะ Rust ตรวจให้ไม่ได้ว่า ptr/len ถูกต้อง ในโค้ดนี้ปลอดภัยเพราะเราตัดให้สั้นลงเท่านั้น`
 
 ---
 
